@@ -1,0 +1,153 @@
+/* common */
+.wrapper{
+    width: 1196px;
+    margin: 0 auto;
+}
+
+header{
+    height: 104px;
+    border-bottom: 1px solid #d5d5d5;
+    background-color: #ffffff;
+}
+
+header .logo{
+    width: 200px;
+    height: 104px;
+    float: left;
+}
+
+header .logo>a{
+    display: block;
+    height: 51px;
+    background-image: url("../images/spirite.png");
+    margin-top: 26px;
+}
+
+
+header .main{
+    width: 996px;
+    height: 100%;
+    float: left;
+}
+
+header .menu{
+    width: 100%;
+    height: 20px;
+    padding-top: 10px;
+    margin-bottom: 24px;
+    line-height: 20px;
+    
+}
+
+header .nav{
+    width: 100%;
+    height: 51px;
+}
+
+.menu ul{
+    float: right;
+}
+
+.main ul>li{
+    float: left;
+}
+
+.menu a{
+    color: #9f9f9f;
+    font-size: 12px;
+}
+
+.menu .sep{
+    color: #ddd;
+    font-size: 12px;
+    margin: 0 5px;
+}
+
+.menu .amigo{
+    color: #ef4222;
+}
+
+.menu .cart{
+    padding-left: 28px;
+    position: relative;
+}
+
+.menu .cart>b{
+    position: absolute;
+    width: 16px;
+    height: 20px;
+    line-height: 20px;
+    background-image: url("../images/spirite.png");
+    background-position: -216px -4px;
+    left: 10px;
+    top: 0px;
+}
+
+.main a:hover{
+    color: #ef4222;
+}
+
+.menu .cart:hover>b{
+    background-image: url("../images/spirite.png");
+    background-position: -262px -4px !important;
+}
+
+.menu .cart-box{
+    position: relative;
+}
+
+.menu .cartitem{
+    width: 320px;
+    height: 48px;
+    line-height: 48px;
+    padding-bottom: 10px;
+    border: 1px solid #e9e9e9;
+    position: absolute;
+    top: 19px;
+    right: 0px;
+    display: none;
+    padding-left: 10px;
+}
+
+.menu .cart:hover~.cartitem{
+    display: block;
+}
+
+.menu .cartitem:hover{
+    display: block;
+}
+
+.nav ul{
+    padding-left: 143px;
+    padding-top: 5px;
+}
+
+.nav a{
+    font-size: 16px;
+    color: #000;
+    margin: 0px 26px;
+}
+
+.nav form{
+    float: right;
+    width: 170px;
+    height: 28px;
+    border: 1px solid #ddd;
+    padding-left: 3px;
+}
+
+.nav form>.search-box{
+    width: 135px;
+    height: 28px;
+    line-height: 28px;
+    outline: none;
+}
+
+.nav form>.search-btn{
+    width: 25px;
+    height: 28px;
+    background: url("https://shop.gionee.com/static/web201310/spirite.png");
+    background-position: -236px 2px;
+    cursor: pointer;
+}
+
