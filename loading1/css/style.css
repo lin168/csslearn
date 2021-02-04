@@ -1,0 +1,118 @@
+.box{
+    margin: 10px;
+    position: relative;
+}
+
+.box1>div,.box2>div{
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: red;
+    position: absolute;
+
+}
+
+.box1,.box2{
+    width: 50px;
+    height: 50px;
+    position: absolute;
+}
+.box2{
+    transform: rotate(45deg);
+}
+
+.item1{
+    left: 0;
+    top: 0;
+    animation: loading 1050ms ease-in-out infinite;
+}
+.item2{
+    left: 0;
+    top: 0;
+    animation: loading 1050ms ease-in-out 150ms infinite;
+
+}
+
+.item3{
+    right: 0;
+    top: 0;
+    animation: loading 1050ms ease-in-out 300ms infinite;
+}
+
+.item4{
+    right: 0;
+    top: 0;
+    animation: loading 1050ms ease-in-out 450ms infinite;
+
+}
+
+.item5{
+    right: 0px;
+    bottom: 0px;
+    animation: loading 1050ms ease-in-out 600ms infinite;
+
+}
+.item6{
+    right: 0px;
+    bottom: 0px;
+    animation: loading 1050ms ease-in-out 750ms infinite;
+
+}
+
+.item7{
+    left: 0;
+    bottom: 0;
+    animation: loading 1050ms ease-in-out 900ms infinite;
+
+}
+.item8{
+    left: 0;
+    bottom: 0;
+    animation: loading 1050ms ease-in-out 1050ms infinite;
+
+}
+
+@keyframes loading{
+    0%{
+        width: 10px;
+        height: 10px;
+    }
+    12.5%{
+        width: 8.75px;
+        height: 8.75px;
+
+    }
+    25%{
+        width: 7.5px;
+        height: 7.5px;
+    }
+    37.5%{
+        width: 6.25px;
+        height: 6.25px;
+    }
+    50%{
+        width: 5px;
+        height: 5px;
+
+    }
+    62.5%{
+        width: 3.75px;
+        height: 3.75px;
+
+    }
+    75%{
+        width: 2.5px;
+        height: 2.5px;
+
+    }
+    87.5%{
+        width: 1.25px;
+        height: 1.25px;
+
+    }
+    100%{
+        width: 0px;
+        height: 0px;
+
+    }
+}
