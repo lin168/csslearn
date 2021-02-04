@@ -268,10 +268,12 @@ header .nav{
     height: 785px;
     margin-bottom: 5px;
     float: left;
+    transition: all .3s ease-in;
 }
 
 .hot-list .big-item:hover{
     box-shadow: 0px 15px 30px rgba(0, 0, 0, .2);
+    transform: translateY(-3px);
 }
 
 
@@ -331,10 +333,12 @@ header .nav{
     margin-right: 12px;
     float: left;
     position: relative;
+    transition: all .3s ease-in;
 }
 
 .part-list .item:hover{
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
 }
 
 
