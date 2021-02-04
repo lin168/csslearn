@@ -1,0 +1,132 @@
+
+header{
+    width: 100%;
+    height: 75px;
+    display: flex;
+    background-color: #ff4433;
+}
+
+header>div:first-child{
+    width: 75px;
+    height: 75px;
+}
+
+header>div:last-child{
+    width: 75px;
+    height: 75px;
+}
+header>div:nth-child(2){
+    height: 75px;
+    flex-grow: 1;
+    color: #fff;
+    font-size: 1.2rem;
+    line-height: 75px;
+}
+header .arrow{
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: url(../images/arrow.png) no-repeat center ;
+}
+
+header .search{
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: url(../images/search.png) no-repeat center;
+}
+/* 服务 */
+.serv{
+    width: 100%;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    
+}
+.serv>div{
+    flex-grow: 1;
+    box-sizing: content-box;
+    
+    min-width: 75px;
+}
+.serv img{
+    width: 40%;
+}
+.serv a{
+    color: #000;
+    font-size: 12px;
+}
+/* 菜单 */
+
+.menu{
+    width: 100%;
+    height: 223px;
+    margin-top: 20px;
+    
+}
+
+.menu .up{
+    width: 100%;
+    height: 111px;
+    display: flex;
+    margin-bottom: 1px;
+    background-color: #fff;
+    align-items: center;
+}
+
+.menu .down{
+    width: 100%;
+    height: 111px;
+    display: flex;
+    background-color: #fff;
+    align-items: center;
+
+}
+
+
+.menu .item{
+    flex-grow: 1;
+    min-width: 75px;
+    border-right: 1px solid #f2f4f5;
+}
+.menu a{
+    color: #000;
+    font-size: 12px;
+}
+
+.up>div:last-child, .down>div:last-child{
+    border-right: 0px;
+}
+/* 为你优选 */
+.forU{
+    width: 100%;
+    margin-top: 20px;
+    background-color: #fff;
+}
+
+.forU>p{
+    font-size: 24px;
+    color: #000;
+    text-align: left;
+    padding:30px 0px;
+    padding-left: 3%;
+}
+
+.forU>.items{
+    width: 100%;
+    display: flex;
+    padding: 0px 3% 20px 3%;
+    box-sizing: border-box;
+}
+.forU>.items>div{
+    flex-grow: 1;
+}
+
+.forU>.items>div:nth-child(2){
+    margin: 0px 5px;
+}
+
+.forU>.items>div img{
+    width: 100%;
+}
