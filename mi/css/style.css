@@ -1,0 +1,156 @@
+.wrapper{
+    width: 1226px;
+    margin: 0 auto;
+}
+
+header{
+    width: 100%;
+    height: 160px;
+}
+
+header>.banner{
+    width: 100%;
+    height: 120px;
+    position: relative;
+    overflow: hidden;
+}
+
+header>.banner img{
+    height: 120px;
+    position: absolute;
+    top:0px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+header>.navbar{
+    height: 40px;
+    background-color: #333;
+
+}
+
+header>.navbar a{
+    color: #b0b0b0;
+    font-size: 12px;
+    line-height: 40px;
+}
+
+header>.navbar a:hover{
+    color: #fff;
+}
+
+header .sep{
+    color: #424242;
+    margin: 0 .3em;
+}
+
+header>.navbar li{
+    float: left;
+}
+
+header .nav{
+    float: left;
+}
+
+header .menu{
+    float: right;
+}
+
+header .cart {
+    width: 120px;
+    margin-left: 15px;
+    float: right;
+    position: relative;
+}
+
+header .cart a{
+    display: inline-block;
+    height: 40px;
+}
+
+header .cart a:hover{
+    color: #ff6700;
+}
+
+
+header .cart .cart-info{
+    width: 316px;
+    height: 0px;
+    position: absolute;
+    right: 0;
+    top: 40px;
+    overflow: hidden;
+    box-shadow: 0px 3px 3px rgba(0, 0, 0, .3);
+    transition: all .3s;
+}
+
+header .cart a:hover+.cart-info, header .cart .cart-info:hover{
+    height: 80px;
+    padding-top: 20px;
+}
+
+header .nav .down{
+    position: relative;
+}
+
+header .nav .down>a{
+    display: inline-block;
+    height: 40px;
+}
+
+header .nav .down>a:hover~.code{
+    height: 148px;
+
+}
+header .nav .down>a:hover~.triangle{
+    display: block;
+}
+
+header .nav .down .code{
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 124px;
+    height: 0px;
+    box-shadow: 0 3px 3px rgba(0, 0, 0, .3);
+    transition: all .3s;
+    overflow: hidden;
+}
+
+header .nav .down .code:hover{
+    height: 148px;
+}
+
+header .nav .down .code:hover~.triangle{
+    display: block;
+}
+
+header .nav .down .code img{
+    width: 90px;
+    margin: 18px auto 12px;
+}
+
+header .nav .down .code p{
+    color: #333;
+    font-size: 14px;
+    line-height: 1;
+}
+
+header .triangle{
+    border-top: 0px;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid white;
+    position: absolute;
+    top: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: none;
+    z-index: 0;
+}
+
+header .triangle:hover~.code{
+    height: 148px;
+
+}
