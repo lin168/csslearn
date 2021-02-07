@@ -1,5 +1,7 @@
 # GeneralUsage
 
+原文地址： https://bitbucket.org/chromiumembedded/cef/wiki/GeneralUsage
+
 这篇教程讲解了CEF中大部分通用的内容，在深入研究之前，这篇文档是必须深入理解。
 
 
@@ -242,6 +244,128 @@ Application/
 
 
 ## 应用结构
+
+每个CEF3应用都有相同的通用结构
+
+- 提供一个入口点函数，在这里初始化CEF，并且运行子进程或CEF消息循环。
+- 提供`CefAPP`的实现来处理进程特定的回调
+- 提供`CefClient`的实现来处理浏览器实例相关的回调。
+- 调用`CefBrowserHost::CreateBrowser()`创建浏览器实例并通过`CefLifeSpanHandler`管理浏览器的生命周期
+
+
+
+### 入口点函数
+
+程序从入口点函数开始执行，Windows平台上就是`wWinMain()`, Linux和Mac平台上是`main()`
+
+在入口点函数中要调用`CefExecuteProcess`函数以便`render GPU plugins`进程的启动。它有一个`CefMainArgs`结构的参数，在Windows平台上是`CefMainArgs main_args(hInstance);`, `hInstance`可以直接用`wWinMain`的参数，也可以用`GetModuleHandle(NULL)`获取。Linux和Mac上则使用 `CefMainArgs main_args(argc, argv);`
+
+
+
+### 单执行体
+
+当运行单执行体应用时，作为进程及回调的CefApp实现应该是不同的，并且在`CefExecuteProcess`中传入的参数也是不同的。单执行体只能在WIndows和Linux上使用，Mac系统不支持。
+
+```c
+// 程序入口函数
+int main(int argc, char* argv[]) {
+  // 传递命令行参数的结构体，这个结构体定义是和平台相关的
+  CefMainArgs main_args(argc, argv);
+
+  // CefAPP接口的实现类
+  CefRefPtr<MyApp> app(new MyApp);
+
+  // 执行子进程逻辑，在browser进程中会立即返回-1，其他进程中将会阻塞，直到进程退出 
+  int exit_code = CefExecuteProcess(main_args, app.get());
+  if (exit_code >= 0) {
+      // 子进程退出
+    return exit_code;
+  }
+
+  // 填充CefSettings结构体来自定义CEF的行为
+  CefSettings settings;
+
+  // 在主进程中初始化CEF
+  CefInitialize(main_args, settings, app.get());
+
+  // 运行CEF消息循环，它会阻塞，直到CefQuitMessageLoop()被调用
+  CefRunMessageLoop();
+
+  // 使用CEF相关资源
+  CefShutdown();
+
+  return 0;
+}
+```
+
+
+
+### 单独的子进程执行体
+
+当使用单独的子进程执行体时，你需要两个独立的可执行程序项目，他们有各自的入口函数。
+
+主应用入口函数：
+
+```c
+// 程序入口函数
+int main(int argc, char* argv[]) {
+  // MacOS沙箱实现要求在运行时加载CEF框架库，而不是在链接时。
+  CefScopedLibraryLoader library_loader;
+  if (!library_loader.LoadInMain())
+    return 1;
+
+  // 传递命令行参数的结构体，这个结构体定义是和平台相关的
+  CefMainArgs main_args(argc, argv);
+
+  // CefAPP接口的实现类
+  CefRefPtr<MyApp> app(new MyApp);
+
+  // 填充CefSettings结构体来自定义CEF的行为
+  CefSettings settings;
+
+  // 指定子进程执行体的路径
+  CefString(&settings.browser_subprocess_path).FromASCII(“/path/to/subprocess”);
+
+  // 在主进程中初始化CEF
+  CefInitialize(main_args, settings, app.get());
+
+  // 运行CEF消息循环，它会阻塞，直到CefQuitMessageLoop()被调用
+  CefRunMessageLoop();
+
+  // 释放CEF资源
+  CefShutdown();
+
+  return 0;
+}
+```
+
+子进程应用的入口函数：
+
+```c
+// 子进程程序入口
+int main(int argc, char* argv[]) {
+  // 初始化macOS沙箱
+  CefScopedSandboxContext sandbox_context;
+  if (!sandbox_context.Initialize(argc, argv))
+    return 1;
+
+  // MacOS沙箱实现要求在运行时加载CEF框架库，而不是在链接时。
+  CefScopedLibraryLoader library_loader;
+  if (!library_loader.LoadInHelper())
+    return 1;
+
+  // 传递命令行参数的结构体，这个结构体定义是和平台相关的
+  CefMainArgs main_args(argc, argv);
+
+  // CefApp接口的实现类
+  CefRefPtr<MyApp> app(new MyApp);
+
+  // 执行子进程逻辑，它会阻塞直到进程退出
+  return CefExecuteProcess(main_args, app.get());
+}
+```
+
+
 
 
 
