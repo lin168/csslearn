@@ -1,5 +1,5 @@
 1. 从上到下 从左到右  从内到外
-2. 如果因内容过大产生滚动条时，则添加overflow:hidden
+2. 如果因内容过大产生滚动条时，则添加overflow:hidden;
 
 
 Iconfont : 购物车、放大镜、右箭头

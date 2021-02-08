@@ -98,11 +98,11 @@ header .nav .down>a{
     height: 40px;
 }
 
-header .nav .down>a:hover~.code{
+header .nav .down:hover .code{
     height: 148px;
 
 }
-header .nav .down>a:hover~.triangle{
+header .nav .down:hover .triangle{
     display: block;
 }
 
@@ -150,7 +150,4 @@ header .triangle{
     z-index: 0;
 }
 
-header .triangle:hover~.code{
-    height: 148px;
 
-}
