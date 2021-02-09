@@ -414,3 +414,11 @@ header .triangle{
     left: 234px;
     background-color: #fff;
 }
+
+
+.main .mid .detail ul{
+    width: 248px;
+    height: 76px;
+    margin:1px 0px;
+    
+}
