@@ -6,6 +6,48 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "614834",
+      "name": "24_话费",
+      "font_class": "24huafei",
+      "unicode": "e66f",
+      "unicode_decimal": 58991
+    },
+    {
+      "icon_id": "1309818",
+      "name": "转换",
+      "font_class": "zhuanhuan",
+      "unicode": "e621",
+      "unicode_decimal": 58913
+    },
+    {
+      "icon_id": "1990040",
+      "name": "时钟",
+      "font_class": "clock",
+      "unicode": "e6be",
+      "unicode_decimal": 59070
+    },
+    {
+      "icon_id": "3718801",
+      "name": "福 (3)",
+      "font_class": "fu",
+      "unicode": "e64b",
+      "unicode_decimal": 58955
+    },
+    {
+      "icon_id": "9752800",
+      "name": "企业",
+      "font_class": "qiye",
+      "unicode": "e60f",
+      "unicode_decimal": 58895
+    },
+    {
+      "icon_id": "18169796",
+      "name": "SIM卡,手机卡,电话卡",
+      "font_class": "sim",
+      "unicode": "e946",
+      "unicode_decimal": 59718
+    },
+    {
       "icon_id": "7872842",
       "name": "右箭头",
       "font_class": "youjiantou",
