@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="c503c8f2-f901-4949-9528-1706e6763027" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/mi/images/01cc6a570d32a2ee09a2d5c2009a9968.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mi/images/03a9e7e96a09d256ca1badeec186c859.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mi/images/0497ba8520dc4aca9d55e6b841d42331.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mi/images/116fc43816b87192be4e67cf762e8da5.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mi/images/1615d1842fe85914a545297836a44271.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mi/images/1e82177bd8c8cd140e0e582ecaa886dc.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mi/images/20d36fbaa18625e4fe507af31e4e9f83.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mi/images/41d16e66381cfeda7b6b39ab67678d5e.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mi/images/59e8fc8ba9718c266882719fb4bbcedd.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mi/images/5a260090e0e08770b0bd865845a4b4ab.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mi/images/6874615b3c50e837ffe532eb6ea4ef1a.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mi/images/9f6c89cf21efc23799f6130224cef007.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mi/images/a660ce095e8f553a9ed1515265f4e9fc.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mi/images/c1062daf42a1a5b2a9108510ecf83d0b.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mi/images/ca0940f052227d235e7de5678d106c89.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mi/images/cb1bd61ad71c45a4f67f09b075463944.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mi/images/eaf70e0e9905de6452f07b1f48fcc386.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mi/images/ffe114f73fac3a45e5622c3eff56106b.webp" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="GOROOT" url="file://$PROJECT_DIR$/../../../Program Files/Go" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1oJTEIEcb1bHYLvdlHacVUZ1C39" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="go.import.settings.migrated" value="true" />
+    <property name="go.sdk.automatically.set" value="true" />
+    <property name="last_opened_file_path" value="$USER_HOME$" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

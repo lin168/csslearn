@@ -6,11 +6,46 @@
   "description": "",
   "glyphs": [
     {
-      "icon_id": "7408037",
+      "icon_id": "363511",
+      "name": "新浪",
+      "font_class": "xinlang",
+      "unicode": "e610",
+      "unicode_decimal": 58896
+    },
+    {
+      "icon_id": "1033986",
+      "name": "微信",
+      "font_class": "iconfontweixin",
+      "unicode": "e635",
+      "unicode_decimal": 58933
+    },
+    {
+      "icon_id": "13645019",
+      "name": "短信",
+      "font_class": "duanxin",
+      "unicode": "e608",
+      "unicode_decimal": 58888
+    },
+    {
+      "icon_id": "165314",
+      "name": "维修扳手",
+      "font_class": "weixiubanshou",
+      "unicode": "e715",
+      "unicode_decimal": 59157
+    },
+    {
+      "icon_id": "5879045",
       "name": "播放",
-      "font_class": "bofang",
-      "unicode": "e638",
-      "unicode_decimal": 58936
+      "font_class": "bofang1",
+      "unicode": "e803",
+      "unicode_decimal": 59395
+    },
+    {
+      "icon_id": "4437608",
+      "name": "右箭头",
+      "font_class": "youjiantou2",
+      "unicode": "e617",
+      "unicode_decimal": 58903
     },
     {
       "icon_id": "778500",
