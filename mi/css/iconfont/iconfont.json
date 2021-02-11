@@ -6,6 +6,20 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "7408037",
+      "name": "播放",
+      "font_class": "bofang",
+      "unicode": "e638",
+      "unicode_decimal": 58936
+    },
+    {
+      "icon_id": "778500",
+      "name": "右箭头",
+      "font_class": "youjiantou1",
+      "unicode": "e619",
+      "unicode_decimal": 58905
+    },
+    {
       "icon_id": "614834",
       "name": "24_话费",
       "font_class": "24huafei",
