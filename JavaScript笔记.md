@@ -106,12 +106,12 @@ type属性是在HTML5之前为了兼容多种浏览器以及多种脚本语言�
 7. **数据类型**：JavaScript中有六种数据类型：number 数值型、string 字符串、boolean 布尔型、undefined未定义类型、null空类型、object 对象类型.
 
    - number 数值型，包括正负、整数、浮点、各种进制、Infinity无线大、NaN(note a number)不存在
-     string 字符串可以用单引号或双引号表示。单双引号可以相互嵌套。转义字符和C语言中一样。
+   - string 字符串可以用单引号或双引号表示。单双引号可以相互嵌套。转义字符和C语言中一样。
    - boolean 只有true和false两个值
    - undefined 只有undefined一个值，表示值类型不确定。
    - null 与其说是一种类型，不如说是对象类型的一个值，表示空指针对象，表示用来保存对象，但还没有指向真正的对象。也可以用来释放对象
-   - object 对象由花括号分隔。在括号内部，对象的属性以键值对的形式定义,也就是json(javascript object notion)。比如
-     var person={firstname:"John",lastname:"Doe",age:18}; 键值之间使用冒号分隔，属性之间使用逗号分隔
+   - object 对象由大括号包围。在括号内部，对象的属性以键值对的形式定义,也就是json(javascript object notion)。比如
+     `var person={firstname:"John",lastname:"Doe",age:18};` 键值之间使用冒号分隔，属性之间使用逗号分隔
 
 8. **运算符和表达式**
 
@@ -194,7 +194,167 @@ type属性是在HTML5之前为了兼容多种浏览器以及多种脚本语言�
 
    - `null undefined NaN` 逻辑上都是`false`， 并且算数和比较运算的结果都是false
 
+9. 数组 : 数组的类型是`Array` ,数组中可以存储任意类型的数据，实际上等价于Java中的List，其长度也是自动变化的。
+
+      ```js
+   // 定义数组
+   var arr = [item1, item2,item3...];
+   // 也可以用new Array的方式创建
+   var arr = new Array('LiLei','HanMeimei'); // 创建一个数组，数组的内容由参数构成
+   var arr = new Array(10); // 定义一个包含10个元素的数组
    
+   
+   // 数组操作： 增删改查
+   // 数组元素可以通过数组名和下标来访问和修改，另外js中不存在数组越界，解释器会自动填充，不存在的元素为empty
+   var arr=[];
+   arr[5] = 8; // 增
+   arr[5] = 3； // 改
+   arr[5] = undefined; // 删
+   // for 循环遍历，或 for in遍历
+   for(var i in arr){
+       console.log(arr[i])
+   }
+   
+   // 常用属性
+   arr.length // 数组长度， 可以通过修改arr.length来改变数组的长度，超出长度的数据将被丢弃。不过不建议修改
+   
+   // 常用方法
+   Array.isArray(obj); // 判断一个对象是不是数组
+   // 用数组实现栈、队列的操作。
+   arr.push(item1,item2...); // 向数组末尾添加元素，返回数组的新长度。
+   arr.pop(); // 删除数组尾部的最后一个元素，并返回该元素
+   arr.unshift(item1,item2...);// 在数组头部添加元素，返回数组的新长度。
+   arr.shift(); // 删除数组头部的第一个元素，并返回该元素 
+   
+   arr.splice(index, delCnt[,item1,item2...]); // 剪接，从指定下标开始删除delCnt个元素，并添加指定的新元素。返回值是删除的元素构成的数组
+   arr.join(sep:string);// 把数组中的元素用分隔符连接起来构成一个字符串。
+   arr.reverse(); // 翻转数组中元素的顺序
+   
+   arr.concat(arr1); // 数组元素拼接，返回新的数组
+   arr.slice(iStart,iEnd); // 数组切片（截取子数组），索引可以用负值，此时最后一个元素的下标为-1
+   arr.indexOf(item, iStart); // 查找第一个符合条件的子元素
+   arr.lastIndexOf(item.iStart); // 查找最后一个符合条件的子元素
+   
+   // 常规操作
+   // 1. 字符串和数组的相互转换
+   str.split(""); <==> arr.join();
+      ```
+
+10. 对象：键值对构成的数据集合，键和值用冒号分隔，键之间用逗号分隔，两端用大括号包围。JavaScript中所有数据都可以被视为对象。键名也就是属性(`property`)
+
+   ```js
+   // 定义对象
+   var obj={ prop1:value1,prop2:value2};
+   
+   // 对象的读写（对象属性的读写）,既可以使用点运算，也可以使用方括号
+   var obj={key:value};
+   console.log(obj.key);  
+   console.log(obj["key"]); // 等价于上面的写法，并且这种方式的key可以用变量表示。
+   // 对象可以随时添加新的属性
+   
+   // 对象的遍历 for in
+   for (var key in obj){
+       
+   }
+   
+   // 对象操作
+   'key' in obj // 判断对象是否包含某个属性
+   
+   // 对象的引用：对象名是对象的引用，一个对象可以有多个引用，他们都可以用来改变这个对象。
+   // 赋值操作：传递对象的引用
+   
+   ```
+
+11. 函数：在JS中，函数时一等公民，也就是说程序的功能由函数构成。JS中函数也是一种特殊对象。
+
+    ```js
+    // 函数定义，在执行时，会首先声明块中定义的函数。
+    function funName(param1,param2...){
+        // do something
+        return; //可以返回任何值
+    }
+    
+    // 匿名函数
+    var fName = function(param1,param2...){
+        // function body
+    }
+    
+    // 调用
+    funName(param list);
+    
+    ```
+
+12. 作用域：变量和函数的作用范围，分为全局作用于和局部作用域。
+
+    全局作用域：在整个程序中可用。
+
+    局部作用域：也叫函数作用域。只能在当前函数内使用。
+
+    ```js
+    // 全局变量的定义: 全局变量可以在任意位置定义，在定义时不带var关键字就表示是全局变量
+    function f(){
+        na = 3; // 定义全局变量na
+    }
+    
+    // 局部变量定义：使用var关键字定义的就是局部变量，形参也是局部变量。
+    ```
+
+
+
+
+
+## DOM
+
+DOM 是`Document Object Modal`(文档对象模型)的缩写，指的是HTML元素在JS中的对象抽象，可以用来管理控制HTML文档的元素。
+
+在学习DOM之前，先回顾一下HTML页面的组成：
+
+HTML页面的所有内容包含在一对`HTML`标签中，然后再这对标签中包含`head body`两个子标签，在子标签内部包含其他标签。
+
+显然，它是一个只有一个根节点的树，每个元素都是这颗树中的一个节点。DOM也是采用树形结构来处理HTML元素的。
+
+![dom](http://pic.llsong.xyz:9000/picbed/2021/2/14/dom-173532.png)
+
+当网页被加载时，浏览器会自动创建页面的文档对象模型,通过文档对象模型，JS能改变页面中的所有HTML元素以及CSS样式。
+
+
+
+## DOM常用对象
+
+1. document对象
+
+   ```js
+   // 常用属性
+   document.title // [rw] html文档的标题<title>
+   document.location.href // [rw] 当前文档的地址
+   
+   // 常用方法
+   document.getElementById(id:string); // 根据id属性获取元素HTMLElement,id是唯一的，只返回一个元素
+   document.getElementsByName(name:string);// 根据name属性获取元素，name可以重复，所以返回的是一个数组
+   document.getElementsByTagName(tag:string); // 根据标签名获取元素，同一个标签可以有多个，所以返回的是一个数组
+   document.getElementsByClassName(class:string); // 根据class属性获取元素，多个元素可以使用相同的class
+   document.querySelector(selector:string); // 使用css选择器来选择元素，返回找到的第一个
+   document.querySelectorAll(selector:string); // 使用css选择器来选择元素，返回找到的所有元素
+   
+   // 创建元素 - 不常用
+   document.createElement(tag:strign);// 在document末尾创建一个元素，返回HTMLElement
+   
+   
+   ```
+
+2. HTMLElement对象: 表示`document.getElementBy*` 系列方法返回的元素对象
+
+   ```js
+   // 常用属性
+   ele.innerText // [rw] 元素中的文本字符串,<div>hello</div> 中的hello
+   ele.innerHTML  // [rw]元素中的文本字符串，可以是一个html元素，<a><img /></a>中的<img />
+   
+   // 常用方法
+   ele.getElementsByTagName(tag:string); // 根据标签名获取该元素的子元素
+   
+   ```
+
+3. HTMLCollection对象：HTMLElement元素的集合
 
 
 
@@ -248,6 +408,79 @@ type属性是在HTML5之前为了兼容多种浏览器以及多种脚本语言�
    ```
 
    转换失败时并不会抛出异常，而是返回`NaN`
+   
+4. 字符串常用属性和方法
+
+   ```js
+   var str = "hello string"
+   console.log(str.length);  // length 字符串长度，字符数
+   
+   str.charAt(index); // 返回指定索引处的字符(string类型)，索引从0开始
+   str.charCodeAt(index); // 返回指定索引处的字符的Unicode编码，中是20013，\u4E2D
+   str.concat(str1,str2,...); // 拼接字符串，等于+
+   str.substring(iStart,iEnd);// 截取子字符串，开始下标和结束下标(可省略，表示到结尾)
+   str.substr(iStart,len); // 截取子字符串，开始下标和长度(可省略，表示到结尾)
+   str.slice(iStart,iEnd); // 截取子字符串，返回的是原字符串的切片【修改时会反应到原字符串，除非生成了新字符串】
+   str.toUpperCase(); // 转换为大写，不改变原字符串
+   str.toLowerCase(); // 转换为小写
+   str.indexOf(substr,iStart); // 从指定下标开始查找子字符串，iStart省略时表示从第一个字符开始。返回下标，找不到返回-1
+   str.lastIndexOf(substr,iStart); // 从指定下标开始向前查找子字符串，iStart省略时表示从最后一个字符开始。
+   str.search(str:regexp); //查找子字符串，支持正则表达式。返回下标
+   str.match(str:regexp); // 返回匹配的字串,支持正则表达式。
+   str.trim(); // 去除字符串两端的空白符
+   str.replace(oldstr, newstr); // 子字符串替换，支持正则表达式。
+   str.split(sep:string); // 分隔字符串，返回数组。用空字符串作为分隔符时，是按字符分隔，也就是把字符串转换为字符数组。未指定分隔符时，则把数组串转换为数组，数组中只有一个元素。
+   ```
+
+   需要注意的就是`split`的用法，以及支持正则表达式的`search\match\replace`
+
+5. 数组 : 数组的类型是`Array` ,数组中可以存储任意类型的数据，实际上等价于Java中的List，其长度也是自动变化的。
+
+   ```js
+   // 定义数组
+   var arr = [item1, item2,item3...];
+   // 也可以用new Array的方式创建
+   var arr = new Array('LiLei','HanMeimei'); // 创建一个数组，数组的内容由参数构成
+   var arr = new Array(10); // 定义一个包含10个元素的数组
+   
+   
+   // 数组操作： 增删改查
+   // 数组元素可以通过数组名和下标来访问和修改，另外js中不存在数组越界，解释器会自动填充，不存在的元素为empty
+   var arr=[];
+   arr[5] = 8; // 增
+   arr[5] = 3； // 改
+   arr[5] = undefined; // 删
+   // for 循环遍历，或 for in遍历
+   for(var i in arr){
+       console.log(arr[i])
+   }
+   
+   // 常用属性
+   arr.length // 数组长度， 可以通过修改arr.length来改变数组的长度，超出长度的数据将被丢弃。不过不建议修改
+   
+   // 常用方法
+   Array.isArray(obj); // 判断一个对象是不是数组
+   // 用数组实现栈、队列的操作。
+   arr.push(item1,item2...); // 向数组末尾添加元素，返回数组的新长度。
+   arr.pop(); // 删除数组尾部的最后一个元素，并返回该元素
+   arr.unshift(item1,item2...);// 在数组头部添加元素，返回数组的新长度。
+   arr.shift(); // 删除数组头部的第一个元素，并返回该元素 
+   
+   arr.splice(index, delCnt[,item1,item2...]); // 剪接，从指定下标开始删除delCnt个元素，并添加指定的新元素。返回值是删除的元素构成的数组
+   arr.join(sep:string);// 把数组中的元素用分隔符连接起来构成一个字符串。
+   arr.reverse(); // 翻转数组中元素的顺序
+   
+   arr.concat(arr1); // 数组元素拼接，返回新的数组
+   arr.slice(iStart,iEnd); // 数组切片（截取子数组），索引可以用负值，此时最后一个元素的下标为-1
+   arr.indexOf(item, iStart); // 查找第一个符合条件的子元素
+   arr.lastIndexOf(item.iStart); // 查找最后一个符合条件的子元素
+   
+   // 常规操作
+   // 1. 字符串和数组的相互转换
+   str.split(""); <==> arr.join();
+   ```
+
+   
 
 
 
