@@ -238,7 +238,7 @@ type属性是在HTML5之前为了兼容多种浏览器以及多种脚本语言�
    // 常规操作
    // 1. 字符串和数组的相互转换
    str.split(""); <==> arr.join();
-      ```
+   ```
 
 10. 对象：键值对构成的数据集合，键和值用冒号分隔，键之间用逗号分隔，两端用大括号包围。JavaScript中所有数据都可以被视为对象。键名也就是属性(`property`)
 
@@ -301,72 +301,150 @@ type属性是在HTML5之前为了兼容多种浏览器以及多种脚本语言�
 
 
 
-
-
 ## DOM
 
-DOM 是`Document Object Modal`(文档对象模型)的缩写，指的是HTML元素在JS中的对象抽象，可以用来管理控制HTML文档的元素。
+DOM 是`Document Object Model`(文档对象模型)的缩写，也就是HTML文档的内存对象表示模型。使用DOM可以方便的对HTML文档中的内容进行管理---增删改查。
 
-在学习DOM之前，先回顾一下HTML页面的组成：
+在深入学习DOM之前，先回顾一下HTML页面的组成：
 
-HTML页面的所有内容包含在一对`HTML`标签中，然后再这对标签中包含`head body`两个子标签，在子标签内部包含其他标签。
-
-显然，它是一个只有一个根节点的树，每个元素都是这颗树中的一个节点。DOM也是采用树形结构来处理HTML元素的。
+HTML页面的所有内容包含在一对`HTML`标签中，然后在这对标签中包含`head body`两个子标签，在子标签内部包含其他标签。在数据结构上，它就是一棵树，每个标签都是一个节点，另外标签中的文本作为该标签的子节点，标签的属性作为该标签的兄弟节点，注释也作为单独的节点处理。 
 
 ![dom](http://pic.llsong.xyz:9000/picbed/2021/2/14/dom-173532.png)
 
-当网页被加载时，浏览器会自动创建页面的文档对象模型,通过文档对象模型，JS能改变页面中的所有HTML元素以及CSS样式。
+在通过DOM对HTML文档进行操作时，也要按照树形结构的思想进行。比如添加子元素，就是在一个节点中添加子节点。一个元素的父元素、子元素、兄弟元素等就对应着父节点、子节点、兄弟节点。
+
+在浏览器中进行页面显示要经过解析、布局、渲染三个步骤：解析又分为HTML解析、CSS规则解析。HTML 解析的结果就是DOM树，HTML文档中的任意一个元素、属性、文本等内容都对应着DOM中的一个节点。CSS解析则是在DOM的基础上为HTML元素关联样式。
+
+布局就是按照从上到下，从左到右，从外到内的顺序来依次定位DOM树中的元素。块级元素独占一行，行内元素在显示不完时自动换行。对float的元素在其父元素内容重新处理布局，对有position属性的元素重新定位，最终要实现的目标就是确定每一个元素的位置和大小。
+
+渲染就是把布局之后的DOM元素显示到浏览器窗口中，渲染完成后就可以看到最终的页面效果了。
+
+JavaScript的解析执行则是js解析器中进行的，使用JS对DOM进行操作时，结果可以实时的反映在渲染的窗口中。
 
 
 
-## DOM常用对象
+### DOM对象操作
 
-1. document对象
+JavaScript中表示DOM根节点的对象是`document`,它代表整个文档。文档的操作主要包括增删改查和事件
+
+1. 查询元素【选择元素】
 
    ```js
-   // 常用属性
-   document.title // [rw] html文档的标题<title>
-   document.location.href // [rw] 当前文档的地址
-   
-   // 常用方法
    document.getElementById(id:string); // 根据id属性获取元素HTMLElement,id是唯一的，只返回一个元素
    document.getElementsByName(name:string);// 根据name属性获取元素，name可以重复，所以返回的是一个数组
    document.getElementsByTagName(tag:string); // 根据标签名获取元素，同一个标签可以有多个，所以返回的是一个数组
    document.getElementsByClassName(class:string); // 根据class属性获取元素，多个元素可以使用相同的class
    document.querySelector(selector:string); // 使用css选择器来选择元素，返回找到的第一个
    document.querySelectorAll(selector:string); // 使用css选择器来选择元素，返回找到的所有元素
-   
-   // 创建元素 - 不常用
-   document.createElement(tag:strign);// 在document末尾创建一个元素，返回HTMLElement
-   
-   
    ```
 
-2. HTMLElement对象: 表示`document.getElementBy*` 系列方法返回的元素对象
+   使用`document`来调用这些方法就是在整个文档中查找，也可以通过某个元素对象来调用这些方法，表示在这个元素内查找，不过只能使用一部分查找方法，比如`getElementsByTagName(tag)`。
+
+2. 增加元素， 很少会使用JS增加元素，了解即可
 
    ```js
-   // 常用属性
-   ele.innerText // [rw] 元素中的文本字符串,<div>hello</div> 中的hello
-   ele.innerHTML  // [rw]元素中的文本字符串，可以是一个html元素，<a><img /></a>中的<img />
+   // 1. 创建元素对象
+   var element = document.createElement(tag:string);
+   // 2. 如果有文本内容，就创建文本对象，并附加到元素上 [文本在DOM中是元素的子节点]
+   var text = document.createTextNode(text);
+   element.appendChild(text);
+   // 3. 创建属性对象，附加到元素上
+   var attr = document.createAttribute(name:string);
+   attr.value = value;
+   element.setAttributeNode(attr);
+   // 3.1 也可以用element.setAttribute(name,value);来设置元素的属性
    
-   // 常用方法
-   ele.getElementsByTagName(tag:string); // 根据标签名获取该元素的子元素
-   
+   // 4. 把该元素附加到父元素最后，或者作为兄弟元素添加到某个元素之前
+   parentEle.appendChild(element); // 在父节点最后插入子节点
+   brotherEle.insertBefore(element); // 在兄弟节点之前插入子节点
    ```
 
-3. HTMLCollection对象：HTMLElement元素的集合
+3. 删除元素
+
+   ```js
+   // 1. 首先要选择元素
+   // 2. 通过其父节点来删除该节点
+   parentNode.removeChild();
+   
+   // 删除属性
+   element.removeAttribute();
+   ```
+
+4. 修改元素
+
+   ```js
+   // 1.选择元素 
+   // 2.替换节点
+   parentNode.replaceChild(eleOld,eleNew);
+   
+   // 3.修改元素的文本
+   element.innerHTML
+   element.innerText
+   
+   // 4. 读写属性
+   element.getAttribute(name); // 返回属性的值，没有属性时返回null
+   element.setAttribute(name,value);
+   element.removeAttribute(name);
+   
+   // 5.使用style属性对象来修改样式（element.style）
+   element.style.width="300px"
+   element.style.backgroundColor="red"; // 属性名中的-会去掉，之后的首字母大写
+   element.style.cssFloat = "left"; 
+   // 5.1 等价于
+   element.style.cssText="width:300px;background-color:red;float:left;"
+   
+   // 6. 使用className属性来修改class属性
+   element.className=name;
+   ```
+
+5. 事件：用户在元素上进行的鼠标、键盘操作称为事件，另外浏览器在处理文档处理中的某些特殊的状态也称为事件，比如页面加载完成，页面开始卸载等。对事件的处理就是为事件添加一个响应函数，在响应函数中处理事件内容
+
+   ```js
+   // 常用事件
+   onclick    鼠标在元素上按下又松开：单击
+   ondblclick 双击
+   onkeydown  按键按下
+   onkeyup    按键松开
+   onkeypress 焦点在一个元素按下按键又松开
+   onmousedown 鼠标在元素上按下
+   onmouseup  鼠标在元素上松开
+   onmousemove 鼠标移动
+   onmouseover 鼠标进入，子元素会自动绑定此事件，也叫做支持冒泡
+   onmouseout  鼠标离开
+   onmouseenter 鼠标进入，区别是子元素不会自动绑定此事件，也叫做不支持冒泡
+   onmouseleave 鼠标离开
+   
+   // 使用实例
+   // 1. 在标签的事件属性中指定要执行的js代码
+   <div onclick="alert('clicked');">hello</div> 
+   -------------------------------------
+   function handleClick(){
+       // do something
+   }
+   // 执行的是一个函数
+   <div onclick="handleClick();" >hello</div> 
+   
+   // 2. 通过元素对象指定事件处理函数[可以用命名函数，也可以用匿名函数]
+   var btn = document.getElementById("btn");
+   btn.onclick = function(){
+       // do something
+   }
+   ```
+
+   
 
 
 
+其他内容：
 
+```js
+document.title // [rw] 文档的标题元素中的文本
+document.body  // [rw] 文档的body元素
 
-
-
-
-
-
-
-
+element.nodeName // [r] 节点名称：元素名、属性名、#text、#document等
+element.nodeValue // [r] 节点的当前值
+element.nodeType // [r] 节点类型（元素1，属性2，文本3，注释8，文档9）
+```
 
 
 
