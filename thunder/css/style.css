@@ -1,0 +1,139 @@
+
+/* 导航 */
+nav{
+    width: 100%;
+    height: 85px;
+    position: fixed;
+    z-index: 999;
+}
+
+.logo{
+    width: 117px;
+    height: 85px;
+    float: left;
+    margin-left: 30px;
+}
+
+.logo img{
+    margin-top: 15px;
+    width: 100%;
+}
+
+.menu{
+    height: 85px;
+    float: right;
+}
+
+.menu li{
+    height: 100%;
+    width: 156px;
+    float: left;
+}
+
+
+.menu li>a{
+    line-height: 85px;
+    color: #fff;
+}
+
+.menu li>a>span{
+    margin-right: 13px;
+    font-size: 20px;
+}
+
+.menu .aside{
+    position: fixed;
+    top: 0px;
+    right: -156px;
+    width: 156px;
+    height: 100%;
+    background-color: rgba(0, 0, 0, .3);
+    transition: all .3s;
+}
+
+.menu>li:hover>.aside{
+    right: 0px;
+}
+
+.one,.two,.three,.four{
+    width: 100%;
+    height: 100%;
+    /* position: relative; */
+    
+}
+
+.one video,.two video,.three video, .four video{
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.two,.three,.four{
+    display: none;
+}
+
+.above{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+}
+
+.above>div{
+    font-size: 50px;
+    margin-top: 20%;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.above>a{
+    display: block;
+    width: 180px;
+    height: 50px;
+    line-height: 52px;
+    border: 1px solid #fff;
+    color: #fff;
+    margin: 30px auto 20px;
+}
+
+.above>a:hover{
+    background-color: rgba(255, 255, 255, .5);
+}
+
+.above>span{
+    font-size: 40px;
+    color: #fff;
+    display: block;
+    animation: animat .5s ease-in-out 0s infinite alternate;   
+}
+
+@keyframes animat{
+    0%{
+        transform: translateY(0px);
+    }
+
+    100%{
+        transform: translateY(5px);
+    }
+}
+
+.screen-change{
+    position: fixed;
+    right: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    
+}
+
+.screen-change>li{
+    width: 8px;
+    height: 8px;
+    margin-bottom: 25px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    
+    
+}

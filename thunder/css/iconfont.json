@@ -1,0 +1,30 @@
+{
+  "id": "2374214",
+  "name": "thunder",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "1328098",
+      "name": "向下箭头",
+      "font_class": "xiangxiajiantou",
+      "unicode": "e60c",
+      "unicode_decimal": 58892
+    },
+    {
+      "icon_id": "5582316",
+      "name": "产品",
+      "font_class": "chanpin",
+      "unicode": "e653",
+      "unicode_decimal": 58963
+    },
+    {
+      "icon_id": "19233227",
+      "name": "更多",
+      "font_class": "gengduo",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    }
+  ]
+}
