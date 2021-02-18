@@ -26,3 +26,41 @@ Iconfont : 购物车、放大镜、右箭头
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+授课端后续工作计划：
+1. CEF内核更换： CEF87
+ - 授课主程序更新到Visual Studio 2017 + WinSDK 19041 工具链
+ - 更换CEF内核内容（头文件+库文件），使用新的SDK接口实现浏览器功能
+ - 对授课客户端中的150+扩展接口进行调整
+（第一阶段：采用VS2015+VS2017混用的方式实现内核更新）
+ - 对项目中引用的开源库全部迁移到VS2017上，包括：DuiLib、 libcurl、openssl、libjpg、libpng、sqlite3等
+ - 把项目中的其他模块代码迁移到VS2017上，包括AnswerQuestionDLl、AnswersCollection、ClientToolDll、COfficeDOwnDll、e-schoolbag、padSchoolDll、PenPaperDll、VcomFtpFileDll 等
+
+
+
+
+
+
+
+
+
