@@ -111,7 +111,7 @@ type属性是在HTML5之前为了兼容多种浏览器以及多种脚本语言�
 
    注意：在使用(读取)变量之前，必须先进行定义，否则会抛出异常。
 
-7. **常量**： 常变量，也就是值不能修改的变量，用const修饰，ES6新增。
+6. **常量**： 常变量，也就是值不能修改的变量，用const修饰，ES6新增。
 
 7. **数据类型**：JavaScript中有六种数据类型：number 数值型、string 字符串、boolean 布尔型、undefined未定义类型、null空类型、object 对象类型。另外需要了解的是JS是动态类型的、弱类型的语言。
 
@@ -120,8 +120,8 @@ type属性是在HTML5之前为了兼容多种浏览器以及多种脚本语言�
    - boolean 只有true和false两个值
    - undefined 只有undefined一个值，表示值类型不确定。
    - null 与其说是一种类型，不如说是对象类型的一个值，表示空指针对象，表示用来保存对象，但还没有指向真正的对象。也可以用来释放对象
-   - object 对象由大括号包围。在括号内部，对象的属性以键值对的形式定义,也就是json(javascript object notion)。比如
-     `var person={firstname:"John",lastname:"Doe",age:18};` 键值之间使用冒号分隔，属性之间使用逗号分隔
+   - object 对象类型，JavaScript中一切皆对象，包括数组、函数等都是通过对象来提供的。
+   - function 函数类型，通常归结到对象中。但是js中的函数是作为一等公民设计的，所以函数的很多特性跟面向对象中的函数并不一样。
 
 8. **动态类型和弱类型**
 
@@ -156,202 +156,6 @@ type属性是在HTML5之前为了兼容多种浏览器以及多种脚本语言�
    NaN != NaN // true, NaN是不相等的
    ```
    
-10. 流程控制：分支和循环
-	
-	```js
-	[分支语句] if +switch
-	if(cond){    
-	    // do something
-	}
-	
-	if(cond){
-	    // do something
-	} else{    
-	    // do somethign else
-	}
-	
-	if(cond1){
-	    // do something
-	} else if(cond2){
-	    // do something else
-	}
-	
-	switch(express){
-	    case val1:
-	        // do something
-	        break;
-	    case val2:
-	        // do something
-	        break;
-		...
-	    default:
-	    	// do something
-	    	break;
-	}
-	
-	// 执行第一个为true的分支
-	switch(true){
-	    case express: // 表达式为true时进入
-	        // do something
-	        break;
-	    case express2:
-	        // do something
-	        break;       
-	}
-	
-	// 循环语句, 和C语言一样
-	for(init;cond;op){
-	    // do something
-	
-	    if(cond){
-	        break; //结束循环
-	    }
-	
-	    continue; // 跳过本次循环
-	}
-	
-	while(cond){
-		// do something
-	}
-	
-	do{
-	    // do something
-	}while(cond);
-	
-	
-	// 经典示例:水仙花数判断
-	function isDaffNum(num){
-	    var sum = 0, i = num;
-	    for(;i>0;i=Math.floor(i/10)){
-	        sum += Math.pow(i%10,3);
-	    }
-	    return sum == num
-	}
-	
-	for(var i=0;i<1000;i++){
-	    if(isDaffNum(i)){
-	        console.log(i)
-	    }
-	}
-	```
-
-   注意点：
-
-   - `null undefined NaN` 逻辑上都是`false`， 并且算数和比较运算的结果都是false
-
-11. 数组 : 数组的类型是`Array` ,数组中可以存储任意类型的数据，实际上等价于Java中的List，其长度也是自动变化的。
-
-    ```js
-    // 定义数组
-    var arr = [item1, item2,item3...];
-    // 也可以用new Array的方式创建
-    var arr = new Array('LiLei','HanMeimei'); // 创建一个数组，数组的内容由参数构成
-    var arr = new Array(10); // 定义一个包含10个元素的数组
-    
-    
-    // 数组操作： 增删改查
-    // 数组元素可以通过数组名和下标来访问和修改，另外js中不存在数组越界，解释器会自动填充，不存在的元素为empty
-    var arr=[];
-    arr[5] = 8; // 增,直接用下标即可，不用担心下标越界
-    arr[5] = 3； // 改
-    arr[5] = undefined; // 删， 也可以用delete arr[5]
-    // for 循环遍历，或 for in遍历 或 for of遍历 或 数组的forEach方法
-    for(var i in arr){  // i 是下标
-        console.log(arr[i])
-    }
-    for(var ele of arr){ // ele就是数组中的元素
-        console.log(ele)
-    }
-    arr.forEach( // 参数是一个函数
-        function(ele, index){ // ele 就是元素，index是下标
-            // do something
-        }
-    )
-    
-    
-    // 常用属性
-    arr.length // 数组长度， 可以通过修改arr.length来改变数组的长度，超出长度的数据将被丢弃。不过不建议修改
-    
-    // 常用方法
-    Array.isArray(obj); // 判断一个对象是不是数组
-    // 用数组实现栈、队列的操作。
-    arr.push(item1,item2...); // 向数组末尾添加元素，返回数组的新长度。
-    arr.pop(); // 删除数组尾部的最后一个元素，并返回该元素
-    arr.unshift(item1,item2...);// 在数组头部添加元素，返回数组的新长度。
-    arr.shift(); // 删除数组头部的第一个元素，并返回该元素 
-    
-    arr.splice(index, delCnt[,item1,item2...]); // 剪接，从指定下标开始删除delCnt个元素，并添加指定的新元素。返回值是删除的元素构成的数组
-    arr.join(sep:string);// 把数组中的元素用分隔符连接起来构成一个字符串。
-    arr.reverse(); // 翻转数组中元素的顺序
-    arr.sort(function(a,b){}); // 对数组元素排序，需要制定排序函数
-    arr.map(function(val,index,arr){
-        // do something with param and return a result
-    }); // 针对数组中的每个元素调用传入的函数，并把函数返回的数据组成新的数组作为map的返回值
-    arr.filter(function(val,index,arr){
-        // do something with param and return a result
-        return true/false;
-    }); // 针对数组中的每个元素调用传入的函数，用满足条件的数据组成新的数组返回。
-    
-    arr.concat(arr1); // 数组元素拼接，返回新的数组
-    arr.slice(iStart,iEnd); // 数组切片（截取子数组），索引可以用负值，此时最后一个元素的下标为-1
-    arr.indexOf(item, iStart); // 查找第一个符合条件的子元素
-    arr.lastIndexOf(item.iStart); // 查找最后一个符合条件的子元素
-    arr.some(function(val,index,arr){}); // 检测数组中是否有元素满足指定条件，满足返回true，否则返回false
-    arr.every(function(val,index,arr){}); // 检测数组中的所有元素是否都满足指定条件
-    arr.include(ele,startpos); // 检测数组中是否包含指定的值
-    arr.reduce(function(prev, currentValue,CurrentIndex,arr){},initvalue) 和 arr.reduceRight(function(prev, currentValue,CurrentIndex,arr){},initvalue); // 接收一个函数作为累加器，会依次把数组元素传入到函数中，然后把最后一个元素传入函数的返回值作为整体的返回值。prev是上次调用的返回值，第一次调用时是initvalue，如果未指定initvalue，则是数组第一个元素，reduce从第二个元素开始。Right表示从最后一个元素开始。
-    arr.find(function(currentvalue, index,arr){}); // 返回第一个使回调函数返回true的元素
-    arr.findIndex(function(currentvalue, index,arr){});// 找到的第一个元素的下标
-    
-    
-    // 常规操作
-    // 1. 字符串和数组的相互转换
-    str.split(""); <==> arr.join();
-    ```
-
-12. 对象：键值对构成的数据集合，键和值用冒号分隔，键之间用逗号分隔，两端用大括号包围。JavaScript中所有数据都可以被视为对象。键名也就是属性(`property`)
-
-    ```js
-    // 定义对象
-    var obj={ prop1:value1,prop2:value2};
-    
-    // 对象的读写（对象属性的读写）,既可以使用点运算，也可以使用方括号
-    var obj={key:value};
-    console.log(obj.key);  
-    console.log(obj["key"]); // 等价于上面的写法，并且这种方式的key可以用变量表示。
-    // 对象可以随时添加新的属性
-    
-    // 对象的遍历 for in
-    for (var key in obj){
-    
-    }
-    
-    // 对象操作
-    'key' in obj // 判断对象是否包含某个属性
-    
-    // 对象的引用：对象名是对象的引用，一个对象可以有多个引用，他们都可以用来改变这个对象。
-    // 赋值操作：传递对象的引用
-    ```
-
-13. 函数：在JS中，函数时一等公民，也就是说程序的功能由函数构成。JS中函数也是一种特殊对象。
-
-    ```js
-    // 函数定义，在执行时，会首先声明块中定义的函数。
-    function funName(param1,param2...){
-        // do something
-        return; //可以返回任何值
-    }
-    
-    // 匿名函数
-    var fName = function(param1,param2...){
-        // function body
-    }
-    
-    // 调用
-    funName(param list);
-    
-    ```
-
 14. 作用域：变量和函数的作用范围，分为全局作用于和局部作用域。
 
     全局作用域：在整个程序中可用。
@@ -375,7 +179,326 @@ type属性是在HTML5之前为了兼容多种浏览器以及多种脚本语言�
     // 后面的代码将按照严格语法模式进行检查
     ```
 
+
+
+
+## 流程控制
+
+顺序结构、分支选择结构、循环结构
+
+```js
+[分支语句] if +switch
+if(cond){    
+// do something
+}
+
+if(cond){
+// do something
+} else{    
+// do somethign else
+}
+
+if(cond1){
+// do something
+} else if(cond2){
+// do something else
+}
+
+switch(express){
+case val1:
+// do something
+break;
+case val2:
+// do something
+break;
+...
+default:
+// do something
+break;
+}
+
+// 执行第一个为true的分支
+switch(true){
+case express: // 表达式为true时进入
+// do something
+break;
+case express2:
+// do something
+break;       
+}
+
+// 循环语句, 和C语言一样
+for(init;cond;op){
+// do something
+
+if(cond){
+break; //结束循环
+}
+
+continue; // 跳过本次循环
+}
+
+while(cond){
+// do something
+}
+
+do{
+// do something
+}while(cond);
+
+
+​	
+// 经典示例:水仙花数判断
+function isDaffNum(num){
+var sum = 0, i = num;
+for(;i>0;i=Math.floor(i/10)){
+sum += Math.pow(i%10,3);
+}
+return sum == num
+}
+
+for(var i=0;i<1000;i++){
+if(isDaffNum(i)){
+console.log(i)
+}
+}
+```
+
+注意点：
+
+- `null undefined NaN` 逻辑上都是`false`， 并且算数和比较运算的结果都是false
+
+
+
+## 数组
+
+数组的类型是`Array` ,数组中可以存储任意类型的数据，实际上等价于Java中的List，其长度也是自动变化的。
+
+```js
+// 定义数组
+var arr = [item1, item2,item3...];
+// 也可以用new Array的方式创建
+var arr = new Array('LiLei','HanMeimei'); // 创建一个数组，数组的内容由参数构成
+var arr = new Array(10); // 定义一个包含10个元素的数组
+
+// 数组操作： 增删改查
+// 数组元素可以通过数组名和下标来访问和修改，另外js中不存在数组越界，解释器会自动填充，不存在的元素为empty
+var arr=[];
+arr[5] = 8; // 增,直接用下标即可，不用担心下标越界
+arr[5] = 3； // 改
+arr[5] = undefined; // 删， 也可以用delete arr[5]
+// for 循环遍历，或 for in遍历 或 for of遍历 或 数组的forEach方法
+for(var i in arr){  // i 是下标
+console.log(arr[i])
+}
+for(var ele of arr){ // ele就是数组中的元素
+console.log(ele)
+}
+arr.forEach( // 参数是一个函数
+function(ele, index){ // ele 就是元素，index是下标
+// do something
+}
+)
+
+// 常用属性
+arr.length // 数组长度， 可以通过修改arr.length来改变数组的长度，超出长度的数据将被丢弃。不过不建议修改
+
+// 常用方法
+Array.isArray(obj); // 判断一个对象是不是数组
+// 用数组实现栈、队列的操作。
+arr.push(item1,item2...); // 向数组末尾添加元素，返回数组的新长度。
+arr.pop(); // 删除数组尾部的最后一个元素，并返回该元素
+arr.unshift(item1,item2...);// 在数组头部添加元素，返回数组的新长度。
+arr.shift(); // 删除数组头部的第一个元素，并返回该元素 
+
+arr.splice(index, delCnt[,item1,item2...]); // 剪接，从指定下标开始删除delCnt个元素，并添加指定的新元素。返回值是删除的元素构成的数组
+arr.join(sep:string);// 把数组中的元素用分隔符连接起来构成一个字符串。
+arr.reverse(); // 翻转数组中元素的顺序
+arr.sort(function(a,b){}); // 对数组元素排序，需要制定排序函数
+arr.map(function(val,index,arr){
+// do something with param and return a result
+}); // 针对数组中的每个元素调用传入的函数，并把函数返回的数据组成新的数组作为map的返回值
+arr.filter(function(val,index,arr){
+// do something with param and return a result
+return true/false;
+}); // 针对数组中的每个元素调用传入的函数，用满足条件的数据组成新的数组返回。
+
+arr.concat(arr1); // 数组元素拼接，返回新的数组
+arr.slice(iStart,iEnd); // 数组切片（截取子数组），索引可以用负值，此时最后一个元素的下标为-1
+arr.indexOf(item, iStart); // 查找第一个符合条件的子元素
+arr.lastIndexOf(item.iStart); // 查找最后一个符合条件的子元素
+arr.some(function(val,index,arr){}); // 检测数组中是否有元素满足指定条件，满足返回true，否则返回false
+arr.every(function(val,index,arr){}); // 检测数组中的所有元素是否都满足指定条件
+arr.include(ele,startpos); // 检测数组中是否包含指定的值
+arr.reduce(function(prev, currentValue,CurrentIndex,arr){},initvalue) 和 arr.reduceRight(function(prev, currentValue,CurrentIndex,arr){},initvalue); // 接收一个函数作为累加器，会依次把数组元素传入到函数中，然后把最后一个元素传入函数的返回值作为整体的返回值。prev是上次调用的返回值，第一次调用时是initvalue，如果未指定initvalue，则是数组第一个元素，reduce从第二个元素开始。Right表示从最后一个元素开始。
+arr.find(function(currentvalue, index,arr){}); // 返回第一个使回调函数返回true的元素
+arr.findIndex(function(currentvalue, index,arr){});// 找到的第一个元素的下标
+
+// 常规操作
+// 1. 字符串和数组的相互转换
+str.split(""); <==> arr.join();
+```
+
+关于二维数组和多维数组的概念也是相同的，二维数组的元素是一维数组，所以二维数组中每个元素的长度可以是不同的，并且都是变长的。
+
+
+
+## 对象
+
+键值对构成的数据集合，键和值用冒号分隔，键之间用逗号分隔，两端用大括号包围。JavaScript中所有数据都可以被视为对象。键名也就是属性(`property`)
+
+``` js
+// 定义对象
+var obj={ 
+	prop1:value1,
+    prop2:value2,
+    ...
+    propn:function(){} // 方法成员的定义方式和属性一样
+};
+
+// 定义空对象
+var obj={};
+var obj=new Object();
+
+
+// 对象的读写（对象属性的读写）,既可以使用点运算，也可以使用方括号
+var obj={key:value};
+console.log(obj.key);  
+console.log(obj["key"]); // 等价于上面的写法，并且这种方式的key可以用变量表示。
+
+// 对象可以随时添加新的属性，即可以用点运算，也可以用方括号
+obj.newProp = value;
+
+// 删除属性
+delete obj.key;
+
+// 对象的遍历 for in
+for (var key in obj){
+	// do something with key
+}
+// 等价于
+for(var key of Object.keys(obj)){ 
+    // do something with key
+}
+Object.keys(obj) // 返回obj中所有的key组成的数组
+Object.values(obj) // 获取所有属性的值组成的数组
+Object.entries(obj) // 返回的是一个保存键值对的数组，键值对用2个元素的数组表示[["name","llsong"],["age",18]]
+
+
+
+// 对象操作
+if ('key' in obj){} // 判断对象是否包含某个属性
+
+// 对象的引用：对象名是对象的引用，一个对象可以有多个引用，他们都可以用来改变这个对象。
+// 赋值操作：传递对象的引用
+```
+
+
+
+## 函数
+
+在JS中，函数是一等公民(first class)，也就是说程序的功能由函数构成。JS中函数也是一种特殊对象。
+
+函数用`function`关键字定义，函数名就是标识符，函数的参数个数和类型都是任意的。返回值未指定时是`undefined`,也可以指定为任意数据，但只能有一个。
+
+```js
+// 函数定义，在执行时，会首先声明块中定义的函数。
+function funName(param1,param2...){
+    // do something
+    return; //可以返回任何值
+}
+
+// 匿名函数
+var fName = function(param1,param2...){
+    // function body
+}
+
+// 调用，实参类型必须与形参一致，多余的实参会被丢弃，不会报错
+funName(param list);
     
+```
+
+
+## 异常捕获
+
+浏览器中针对没每个script标签会启动一个解析器，然后在js虚拟机中执行解析之后的代码，如果js代码执行过程中发生错误，则停止执行，并在控制台上显示异常信息。一个script标签中的代码异常不会影响其他script标签中的代码执行。
+
+如果希望异常发生后，不影响后面的语句执行，则可以把可能发生异常的代码放到`try{}catch(error){}`块中，这样即使try块中的代码发生了异常，之后的代码也可以正常执行。
+
+```js
+try{
+    // 可能发生异常的代码
+} catch(error){
+    // 处理发生的异常
+}
+
+```
+
+
+
+
+
+
+
+
+
+## 常用标准库对象
+
+标准库对象由浏览器提供，可以在js代码中直接使用
+
+### Math
+
+提供数学函数相关属性和方法
+
+```js
+// 常用属性
+PI 圆周率
+
+// 常用方法
+random(); 随机[0,1)的数,可以用它生成任意范围的随机数,生成[m,n]的随机整数，parseInt(Math.random()*(n-m+1)+m)
+floor(); 向下取整
+ceil();  向上取整
+round(); 四舍五入
+pow(x,y); x的y次方
+max(); 最大值，参数可以有多个
+min(); 最小值
+abs(); 绝对值
+sqrt(); 求平方根
+```
+
+### 日期时间Date
+
+提供日期和时间处理的属性和方法
+
+```js
+// 获取当前时间
+var dt = new Date();
+var dt1 = new Date("2021-02-19 13:41:54");// 指定日期时间的对象
+var dt2 = new Date(毫秒值);// 参数是距1970-1-1 0:0:0的毫秒数
+
+// 常用属性
+
+// 常用方法
+getTime(); 获取距离1970-1-1 0:0:0的毫秒数，常用的时间戳
+getYear(); 获取年，距1900年的年份
+getFullYear(); 获取4位的年份
+getMonth(); 获取月份 0~11
+getDate(); 获取日
+getDay(); 获取星期几
+getHours(); getMinutes(); getSeconds(); 获取时分秒
+toString(); 转换为字符串
+toLocalString(); 先转换为本地时区，然后转换为字符串
+toDateString(); 只转换日期，
+toTimeString(); 只转换时间
+
+// 常用操作
+1. 计算日期间隔
+日期对象直接做减法即可，返回的是毫秒值
+
+
+```
+
+
 
 
 
@@ -563,6 +686,7 @@ element.nodeType // [r] 节点类型（元素1，属性2，文本3，注释8，�
    
    [浮点数转整数]
    ```
+   
 1. parseInt(fnum,radix);参数同样可以是浮点数，小数部分直接丢弃
    2. Math.round(); 四舍五入
    3. Math.floor(num); 小于num的最大整数
@@ -580,7 +704,7 @@ element.nodeType // [r] 节点类型（元素1，属性2，文本3，注释8，�
    转换失败时并不会抛出异常，而是返回`NaN`
    ```
    
-4. 字符串常用属性和方法
+5. 字符串常用属性和方法
 
    ```js
    var str = "hello string"
@@ -599,21 +723,50 @@ element.nodeType // [r] 节点类型（元素1，属性2，文本3，注释8，�
    str.search(str:regexp); //查找子字符串，支持正则表达式。返回下标
    str.match(str:regexp); // 返回匹配的字串,支持正则表达式。
    str.trim(); // 去除字符串两端的空白符
-   str.replace(oldstr, newstr); // 子字符串替换，支持正则表达式。
+   str.replace(oldstr, newstr); // 子字符串替换，支持正则表达式。默认只替换第一个
    str.split(sep:string); // 分隔字符串，返回数组。用空字符串作为分隔符时，是按字符分隔，也就是把字符串转换为字符数组。未指定分隔符时，则把数组串转换为数组，数组中只有一个元素。
+   
+   // ES6\7 新增方法
+   str.include(substr); // 是否包含子字符串
+   str.startsWith(substr); // 是否以某个字符串开头
+   str.endsWith(substr); // 是否以某个字符串结尾
+   str.repeat(count); // 字符串重复n次组成的新字符串
+   str.padStart(tarLen,str1); // 如果str的长度不足tarLen，则使用str1在开始处填充
+   str.padEnd(tarLen,str1); // 在字符串结尾补充
+   
+   // 字符串与Base64编码， 下面几个是window对象的方法，可以直接使用
+   btoa(str); 字符串或二进制值转为Base64编码
+   atob(base64); Base64编码转为原来的值
+   
+   // 字符串与URI
+   encodeURIComponent(str); 将非ASCII码字符转为URI编码
+   decodeURIComponent(); 将转码后的内容转为非ASCII内容
+   
    ```
 
    需要注意的就是`split`的用法，以及支持正则表达式的`search\match\replace`
 
-5. 模板字符串：使用反引号包围，中间用${}包围JS表达式
+6. 模板字符串：使用反引号包围，中间用${}包围JS表达式
 
    ```js
    console.log(`${num1}+${num2}=${sum}`);
    ```
+
+7. 数值型对象的方法
+
+   ```js
+   let num = Math.PI;
+   console.log(num.toFixed(2)); // 保留两位小数 "3.14"
+   console.log(num.toPrecision(2)); // 数据精度，3.1
+   ```
+
    
-   
-   
-   
+
+
+
+
+
+
 
 
 
