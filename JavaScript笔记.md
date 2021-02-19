@@ -156,20 +156,27 @@ type属性是在HTML5之前为了兼容多种浏览器以及多种脚本语言�
    NaN != NaN // true, NaN是不相等的
    ```
    
-14. 作用域：变量和函数的作用范围，分为全局作用于和局部作用域。
+10. 作用域：变量和函数的作用范围，分为全局作用域和局部作用域。
 
-    全局作用域：在整个程序中可用。
+   全局作用域：在整个程序中可用，实际上就是添加到`window`对象上的属性和方法。
 
-    局部作用域：也叫函数作用域。只能在当前函数内使用。
+   局部作用域：也就是只能在代码块或函数内使用。
 
-    ```js
-    // 全局变量的定义: 全局变量可以在任意位置定义，在定义时不带var关键字就表示是全局变量
-    function f(){
-        na = 3; // 定义全局变量na
-    }
-    
-    // 局部变量定义：使用var关键字定义的就是局部变量，形参也是局部变量。
-    ```
+   ```js
+   // 全局变量和函数的定义: 在函数外定义的变量就是全局变量，全局变量会作为属性添加到window对象上。另外，在程序中未定义就赋值的变量都会自动添加到window对象上，也就是全局变量。
+   var name="llsong";
+   age = 18;
+   let gender = "man"
+   function talk(){
+   }
+   // 局部变量定义：也就是在代码块{}中定义的变量和匿名函数
+   function fn(){
+       var name="temp name";
+       var f1 = function(){
+           console.log("内部匿名函数");
+       }
+   }
+   ```
 
 15. 严格模式：为了规范js代码，可以选择性开启
 
@@ -412,6 +419,11 @@ function funName(param1,param2...){
 var fName = function(param1,param2...){
     // function body
 }
+
+// 函数时Function类型，也可以用new来创建
+var fn = new Function(param1,param2,.."console.log('function boby')"); 
+最后一个参数就是要执行的函数语句
+
 
 // 调用，实参类型必须与形参一致，多余的实参会被丢弃，不会报错
 funName(param list);
