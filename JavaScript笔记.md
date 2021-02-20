@@ -410,25 +410,41 @@ if ('key' in obj){} // 判断对象是否包含某个属性
 
 ```js
 // 函数定义，在执行时，会首先声明块中定义的函数。
-function funName(param1,param2...){
+function funName(arg1,arg2,arg3){
     // do something
     return; //可以返回任何值
 }
 
-// 匿名函数
-var fName = function(param1,param2...){
+// 匿名函数,它的作用范围由变量决定，在DOM事件，回调函数中通常都使用匿名函数
+var fName = function(arg1,arg2,arg3){
     // function body
 }
 
-// 函数时Function类型，也可以用new来创建
+// 函数是Function类型，也可以用new来创建
 var fn = new Function(param1,param2,.."console.log('function boby')"); 
 最后一个参数就是要执行的函数语句
 
 
-// 调用，实参类型必须与形参一致，多余的实参会被丢弃，不会报错
+// 调用, 实参数和形参数可以不一致，实参多时，多余的实参将被自动丢弃[也可以使用arguments参数取到]，实参少时，未赋值的形参则是undefined。
 funName(param list);
-    
+
+// 变参函数（长度可变）: 在函数内部所有的实参都会按顺序放到arguments对象中，它的用法和数组类似，可以使用下标取出每一个实参。
+// arguments有两个属性： length 表示实参的个数， callee 表示函数本身，在匿名函数中可以使用它来实现函数递归。
+function(arg1,arg2){
+    console.log(arguments);
+}
 ```
+
+匿名自执行函数：在定义时直接调用的匿名函数，这个函数只能调用一次。这也限定了它的使用场景：是一个代码块，但会且只会执行一次。
+
+```js
+(function(arglist){
+   // function body 
+})();
+```
+
+
+
 
 
 ## 异常捕获
@@ -445,12 +461,6 @@ try{
 }
 
 ```
-
-
-
-
-
-
 
 
 
@@ -506,8 +516,6 @@ toTimeString(); 只转换时间
 // 常用操作
 1. 计算日期间隔
 日期对象直接做减法即可，返回的是毫秒值
-
-
 ```
 
 
@@ -516,7 +524,7 @@ toTimeString(); 只转换时间
 
 ## DOM
 
-DOM 是`Document Object Model`(文档对象模型)的缩写，也就是HTML文档的内存对象表示模型。使用DOM可以方便的对HTML文档中的内容进行管理---增删改查。
+DOM 是`Document Object Model`(文档对象模型)的缩写，也就是HTML文档的内存对象表示模型。使用DOM可以方便的对HTML文档中的内容进行管理---增删改查。DOM可以看做是一个标准：它规范了HTML文档元素的表示方式(内存对象模型-树)，以及操作HTML文档元素的接口API。
 
 在深入学习DOM之前，先回顾一下HTML页面的组成：
 
@@ -524,7 +532,7 @@ HTML页面的所有内容包含在一对`HTML`标签中，然后在这对标签�
 
 ![dom](http://pic.llsong.xyz:9000/picbed/2021/2/14/dom-173532.png)
 
-在通过DOM对HTML文档进行操作时，也要按照树形结构的思想进行。比如添加子元素，就是在一个节点中添加子节点。一个元素的父元素、子元素、兄弟元素等就对应着父节点、子节点、兄弟节点。
+在通过DOM对HTML文档进行操作时，也要按照树形结构的方式进行。比如添加子元素，就是在一个节点中添加子节点。一个元素的父元素、子元素、兄弟元素等就对应着父节点、子节点、兄弟节点。
 
 在浏览器中进行页面显示要经过解析、布局、渲染三个步骤：解析又分为HTML解析、CSS规则解析。HTML 解析的结果就是DOM树，HTML文档中的任意一个元素、属性、文本等内容都对应着DOM中的一个节点。CSS解析则是在DOM的基础上为HTML元素关联样式。
 
@@ -552,6 +560,8 @@ JavaScript中表示DOM根节点的对象是`document`,它代表整个文档。�
    ```
 
    使用`document`来调用这些方法就是在整个文档中查找，也可以通过某个元素对象来调用这些方法，表示在这个元素内查找，不过只能使用一部分查找方法，比如`getElementsByTagName(tag)`。
+
+   相对而言，getElement*()方法的效率更高，但querySelector的功能更强大，所以根据情况选择即可。
 
 2. 增加元素， 很少会使用JS增加元素，了解即可
 
@@ -591,12 +601,23 @@ JavaScript中表示DOM根节点的对象是`document`,它代表整个文档。�
    parentNode.replaceChild(eleOld,eleNew);
    
    // 3.修改元素的文本
-   element.innerHTML
-   element.innerText
+   element.innerHTML // 内容可以是HTML子标签
+   element.innerText // 内容只能是文本，标签会自动去除
+   element.value 	  // 适用于表单元素 input
+   element.textContent // 功能和innerText一样，不过兼容旧的浏览器版本
    
    // 4. 读写属性
-   element.getAttribute(name); // 返回属性的值，没有属性时返回null
+   element.getAttribute(name); //[常用] 返回属性的值，没有属性时返回null
+   element.id //[常用] 可以用元素对象.属性名的方式来获取属性值，不支持自定义属性
+   element["id"] // 元素对象["属性名"]，不支持自定义属性
+   element.getAttributeNode(name); // 获取属性节点对象，然后在通过nodeName,nodeValue就能获取属性名和属性值
+   element.attributes; // 获取元素的所有属性列表，然后通过下标就能获取每一个属性节点对象
+   // 上面几种读的方式也可以用来写
    element.setAttribute(name,value);
+   element.id = value; // 不支持自定义属性
+   element.["id"]=value;
+   element.getAttributeNode(name).nodeValue=newValue;
+   
    element.removeAttribute(name);
    
    // 5.使用style属性对象来修改样式（element.style）
@@ -606,7 +627,7 @@ JavaScript中表示DOM根节点的对象是`document`,它代表整个文档。�
    // 5.1 等价于
    element.style.cssText="width:300px;background-color:red;float:left;"
    
-   // 6. 使用className属性来修改class属性
+   // 6. 使用className属性来修改class属性[因为class是保留字，所以用className来代替class属性]
    element.className=name;
    ```
 
@@ -644,22 +665,35 @@ JavaScript中表示DOM根节点的对象是`document`,它代表整个文档。�
    }
    ```
 
+6. 其他内容：
+
+    ```js
+    // 文档常用属性
+    document.title // [rw] 文档的标题元素中的文本
+    document.body  // [rw] 文档的body元素
+
+    // 节点常用属性
+    element.nodeName // [r] 节点名称：元素名、属性名、#text、#comment、 #document等
+    element.nodeValue // [r] 节点的当前值
+    element.nodeType // [r] 节点类型（元素1，属性2，文本3，注释8，文档9）
+
+    element.firstChild  // 第一个子节点就是文本内容
+    element.nextSibling  // 元素之后的元素
+    ```
+
+
+
+### 常用操作
+
+1. 复选框的checked以及下拉列表框的selected属性等单值属性用true和false表示是否选中
+
+   ```js
+   var hobbys = document.getElementsByName("hobby");
+   hobbys[0].checked=true;
+   hobbys[1].checked=false;
+   ```
+
    
-
-
-
-其他内容：
-
-```js
-document.title // [rw] 文档的标题元素中的文本
-document.body  // [rw] 文档的body元素
-
-element.nodeName // [r] 节点名称：元素名、属性名、#text、#document等
-element.nodeValue // [r] 节点的当前值
-element.nodeType // [r] 节点类型（元素1，属性2，文本3，注释8，文档9）
-```
-
-
 
 
 
