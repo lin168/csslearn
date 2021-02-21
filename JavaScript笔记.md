@@ -669,16 +669,46 @@ JavaScript中表示DOM根节点的对象是`document`,它代表整个文档。�
 
     ```js
     // 文档常用属性
+    document.documentElement // [r] html文档，☆
     document.title // [rw] 文档的标题元素中的文本
-    document.body  // [rw] 文档的body元素
-
+document.body  // [r] 文档的body元素
+    document.head
+    document.doctype // 文档类型声明
+    
+    document.documentURI // 当前网址,一般就是URL
+document.URL  // URL
+    domain // 服务器域名
+    lastModified  // 响应头信息
+    location // 地址对象，location.href 也是URL
+    readyState // 文档的状态：loading、interactive（加载外部资源）、complete
+    
+    anchors 页面中具有name属性的超链接元素的集合
+    forms  页面中所有form元素的集合
+    images 页面中所有image元素的集合
+    links 页面中所有带有href属性的元素的集合
+    scripts 页面中所有script节点的集合
+    
+    
     // 节点常用属性
     element.nodeName // [r] 节点名称：元素名、属性名、#text、#comment、 #document等
     element.nodeValue // [r] 节点的当前值
     element.nodeType // [r] 节点类型（元素1，属性2，文本3，注释8，文档9）
-
-    element.firstChild  // 第一个子节点就是文本内容
-    element.nextSibling  // 元素之后的元素
+    
+    // 节点关系：中间包含空白文本节点
+    childNodes // 子节点（可以有多个）
+    parentNode // 父节点（只有一个）
+    firstChild  // 第一个子节点（有文本时就是文本内容）
+    lastChild // 最后一个子节点
+    nextSibling  // 下一个兄弟节点
+    previousSibling // 上一个兄弟节点
+    
+    // 元素节点关系：自动忽略空白文本节点
+    children
+    parentElement
+    firstElementChild
+    lastElementChild
+    nextElementSibling
+    previousElementSibling
     ```
 
 
