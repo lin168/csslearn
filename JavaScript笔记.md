@@ -360,7 +360,7 @@ var obj={
 	prop1:value1,
     prop2:value2,
     ...
-    propn:function(){} // 方法成员的定义方式和属性一样
+    propn:function(){} // 方法成员的定义方式和属性一样,在方法中可以使用this来指代当前对象。
 };
 
 // 定义空对象
@@ -398,6 +398,9 @@ if ('key' in obj){} // 判断对象是否包含某个属性
 
 // 对象的引用：对象名是对象的引用，一个对象可以有多个引用，他们都可以用来改变这个对象。
 // 赋值操作：传递对象的引用
+
+
+
 ```
 
 
@@ -578,7 +581,7 @@ JavaScript中表示DOM根节点的对象是`document`,它代表整个文档。�
    // 3.1 也可以用element.setAttribute(name,value);来设置元素的属性
    
    // 4. 把该元素附加到父元素最后，或者作为兄弟元素添加到某个元素之前
-   parentEle.appendChild(element); // 在父节点最后插入子节点
+   parentEle.appendChild(element); // 在父节点最后插入子节点。
    brotherEle.insertBefore(element); // 在兄弟节点之前插入子节点
    ```
 
@@ -599,6 +602,8 @@ JavaScript中表示DOM根节点的对象是`document`,它代表整个文档。�
    // 1.选择元素 
    // 2.替换节点
    parentNode.replaceChild(eleOld,eleNew);
+   parentNode.appendChild(); //此方法也可以把一个节点移动到它父节点的最后
+   
    
    // 3.修改元素的文本
    element.innerHTML // 内容可以是HTML子标签
@@ -606,7 +611,7 @@ JavaScript中表示DOM根节点的对象是`document`,它代表整个文档。�
    element.value 	  // 适用于表单元素 input
    element.textContent // 功能和innerText一样，不过兼容旧的浏览器版本
    
-   // 4. 读写属性
+   // 4. 修改属性
    element.getAttribute(name); //[常用] 返回属性的值，没有属性时返回null
    element.id //[常用] 可以用元素对象.属性名的方式来获取属性值，不支持自定义属性
    element["id"] // 元素对象["属性名"]，不支持自定义属性
@@ -617,15 +622,41 @@ JavaScript中表示DOM根节点的对象是`document`,它代表整个文档。�
    element.id = value; // 不支持自定义属性
    element.["id"]=value;
    element.getAttributeNode(name).nodeValue=newValue;
-   
    element.removeAttribute(name);
    
-   // 5.使用style属性对象来修改样式（element.style）
+   // 5.修改样式
+   // 行内样式使用style属性对象来修改样式（element.style）
    element.style.width="300px"
    element.style.backgroundColor="red"; // 属性名中的-会去掉，之后的首字母大写
    element.style.cssFloat = "left"; 
-   // 5.1 等价于
+   // 5.1 也可以使用cssText，不过它是修改整个style属性
    element.style.cssText="width:300px;background-color:red;float:left;"
+   // style对象也提供了对应的方法来get/set/remove样式属性，一般直接使用点运算来操作。
+   element.style.getProperty(propName,value);
+   element.style.setProperty(propName,value);
+   element.style.removeProperty(propName); // 删除属性
+   
+   // style属性只能修改行内样式，修改内部和外部样式,谷歌使用window.getComputedStyle(element,null)，老版本IE使用element.currentStyle,兼容的写法如下
+   function getStyle(ele){
+       if(window.getComputedStyle == undefined){
+       	return element.currentStyle;   
+       }else{
+           return window.getComputedStyle(ele);
+       }
+   }
+   var style = getStyle(element);
+   style.width = "200px"; // get、set 样式属性
+   
+   // 定位相关的属性
+   offsetParent: 绝对定位下的父元素节点
+   offsetTop: 距父元素的上部偏移量
+   offsetLeft: 距父元素的左侧偏移量
+   
+   // 元素的大小属性
+   offsetWidth： 元素的宽度，包括content、padding、border
+   offsetHeight：元素的高度，包括content、padding、border
+   clientWidth： 客户区宽度，包括content、padding
+   clientHeight:客户区高度，包括content、padding
    
    // 6. 使用className属性来修改class属性[因为class是保留字，所以用className来代替class属性]
    element.className=name;
@@ -658,12 +689,43 @@ JavaScript中表示DOM根节点的对象是`document`,它代表整个文档。�
    // 执行的是一个函数
    <div onclick="handleClick();" >hello</div> 
    
-   // 2. 通过元素对象指定事件处理函数[可以用命名函数，也可以用匿名函数]
+   // 2. [常用，兼容性好]通过元素对象指定事件处理函数[可以用命名函数，也可以用匿名函数]，也叫DOM 0级事件处理程序
    var btn = document.getElementById("btn");
    btn.onclick = function(){
        // do something
    }
+   
+   // 3. DOM 2级事件处理程序. element.addEventListener(eventname,handleFun,bEventStream), 事件流，默认false，表示事件冒泡，true表示事件捕获。 此方法在IE9之前不支持。对应的删除事件处理程序的方法是element.removeEventListener(eventname,handleFun,bEventStream);此时，响应函数不能是匿名函数
+   btn.addEventListener("click",function(){
+       console.log("hello");
+   },false); // 这种方式不能删除函数，必须是命名函数
+   // 这种方式为同一事件添加的多个事件处理程序可以同时存在，按添加的顺序进行执行，而不会进行覆盖。
+   
+   // 4. 针对IE添加事件处理函数
+   element.attachEvent("onclick",function(){
+      console.log("clicked"); 
+   });
+   element.detachEvent("onclick",fn);
+   
+   // 所以DOM2的兼容写法如下：
+   function addEvent(element, eventName,callback,eventStream){
+       if(element.addEventListener == undefined){
+           element.attachEvent("on"+eventName, callback);
+       }else{
+           element.addEventListener(eventName,callback,eventStream);
+       }
+       return;
+   }
+   
    ```
+
+   注意事项：
+
+   - 由于事件处理函数是元素的一个属性方法，所以可以使用this来获取当前元素的其他属性。
+   - 多次指定事件处理函数时，由于HTML标签属性时从后向前解析，所以第一个生效，element.onclick 是从上往下执行，所以最后一个生效。
+   - 事件流：在元素布局时，子元素是在父元素父元素内部(上面)显示的，如果我们在子元素内点击鼠标，那么子元素和父元素都能触发点击事件，事件流指的就是事件在子元素和父元素之间的顺序。冒泡就是先触发子元素的事件，然后向父元素传递。捕获就是父元素先触发事件，然后子元素才触发事件。默认是冒泡。
+
+   
 
 6. 其他内容：
 
@@ -671,12 +733,12 @@ JavaScript中表示DOM根节点的对象是`document`,它代表整个文档。�
     // 文档常用属性
     document.documentElement // [r] html文档，☆
     document.title // [rw] 文档的标题元素中的文本
-document.body  // [r] 文档的body元素
+    document.body  // [r] 文档的body元素
     document.head
     document.doctype // 文档类型声明
     
     document.documentURI // 当前网址,一般就是URL
-document.URL  // URL
+    document.URL  // URL
     domain // 服务器域名
     lastModified  // 响应头信息
     location // 地址对象，location.href 也是URL
@@ -701,6 +763,9 @@ document.URL  // URL
     lastChild // 最后一个子节点
     nextSibling  // 下一个兄弟节点
     previousSibling // 上一个兄弟节点
+    a.isEqualNode(b); // 判断两个节点是否相同（nodeType,nodeValue,nodeName）
+    a.contains(b); // 判断a节点是否包含b节点
+    a.hasChildNodes(); // 判断a节点是否有子节点
     
     // 元素节点关系：自动忽略空白文本节点
     children
@@ -709,6 +774,9 @@ document.URL  // URL
     lastElementChild
     nextElementSibling
     previousElementSibling
+    
+    
+    
     ```
 
 
