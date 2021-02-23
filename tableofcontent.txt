@@ -1,10 +1,3 @@
-391_事件上_购物车202002期第二阶段
-392_事件上_全选、反选、不选202002期第二阶段
-393_事件下_事件对象的获取202002期第二阶段
-394_事件下_type属性202002期第二阶段
-395_事件下_ctrlKey、altKey、shiftKey202002期第二阶段
-396_事件下_keyCode202002期第二阶段
-397_事件下_clientX、clientY、offsetX、offsetY、screenX、screenY、pageX、pageY202002期第二
 398_事件下_urrentTarget、target202002期第二阶段
 399_事件下_preventDefault与鼠标右击事件202002期第二阶段
 400_事件下_stopPropagation202002期第二阶段

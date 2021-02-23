@@ -662,71 +662,6 @@ JavaScript中表示DOM根节点的对象是`document`,它代表整个文档。�
    element.className=name;
    ```
 
-5. 事件：用户在元素上进行的鼠标、键盘操作称为事件，另外浏览器在处理文档处理中的某些特殊的状态也称为事件，比如页面加载完成，页面开始卸载等。对事件的处理就是为事件添加一个响应函数，在响应函数中处理事件内容
-
-   ```js
-   // 常用事件
-   onclick    鼠标在元素上按下又松开：单击
-   ondblclick 双击
-   onkeydown  按键按下
-   onkeyup    按键松开
-   onkeypress 焦点在一个元素按下按键又松开
-   onmousedown 鼠标在元素上按下
-   onmouseup  鼠标在元素上松开
-   onmousemove 鼠标移动
-   onmouseover 鼠标进入，子元素会自动绑定此事件，也叫做支持冒泡
-   onmouseout  鼠标离开
-   onmouseenter 鼠标进入，区别是子元素不会自动绑定此事件，也叫做不支持冒泡
-   onmouseleave 鼠标离开
-   
-   // 使用实例
-   // 1. 在标签的事件属性中指定要执行的js代码
-   <div onclick="alert('clicked');">hello</div> 
-   -------------------------------------
-   function handleClick(){
-       // do something
-   }
-   // 执行的是一个函数
-   <div onclick="handleClick();" >hello</div> 
-   
-   // 2. [常用，兼容性好]通过元素对象指定事件处理函数[可以用命名函数，也可以用匿名函数]，也叫DOM 0级事件处理程序
-   var btn = document.getElementById("btn");
-   btn.onclick = function(){
-       // do something
-   }
-   
-   // 3. DOM 2级事件处理程序. element.addEventListener(eventname,handleFun,bEventStream), 事件流，默认false，表示事件冒泡，true表示事件捕获。 此方法在IE9之前不支持。对应的删除事件处理程序的方法是element.removeEventListener(eventname,handleFun,bEventStream);此时，响应函数不能是匿名函数
-   btn.addEventListener("click",function(){
-       console.log("hello");
-   },false); // 这种方式不能删除函数，必须是命名函数
-   // 这种方式为同一事件添加的多个事件处理程序可以同时存在，按添加的顺序进行执行，而不会进行覆盖。
-   
-   // 4. 针对IE添加事件处理函数
-   element.attachEvent("onclick",function(){
-      console.log("clicked"); 
-   });
-   element.detachEvent("onclick",fn);
-   
-   // 所以DOM2的兼容写法如下：
-   function addEvent(element, eventName,callback,eventStream){
-       if(element.addEventListener == undefined){
-           element.attachEvent("on"+eventName, callback);
-       }else{
-           element.addEventListener(eventName,callback,eventStream);
-       }
-       return;
-   }
-   
-   ```
-
-   注意事项：
-
-   - 由于事件处理函数是元素的一个属性方法，所以可以使用this来获取当前元素的其他属性。
-   - 多次指定事件处理函数时，由于HTML标签属性时从后向前解析，所以第一个生效，element.onclick 是从上往下执行，所以最后一个生效。
-   - 事件流：在元素布局时，子元素是在父元素父元素内部(上面)显示的，如果我们在子元素内点击鼠标，那么子元素和父元素都能触发点击事件，事件流指的就是事件在子元素和父元素之间的顺序。冒泡就是先触发子元素的事件，然后向父元素传递。捕获就是父元素先触发事件，然后子元素才触发事件。默认是冒泡。
-
-   
-
 6. 其他内容：
 
     ```js
@@ -775,9 +710,122 @@ JavaScript中表示DOM根节点的对象是`document`,它代表整个文档。�
     nextElementSibling
     previousElementSibling
     
-    
-    
     ```
+
+
+
+### 事件
+
+用户在元素上进行的鼠标、键盘操作称为事件，另外浏览器在处理文档处理中的某些特殊的状态也称为事件，比如页面加载完成，页面开始卸载等。对事件的处理就是为事件添加一个响应函数，在响应函数中处理事件内容
+
+   ```js
+// 常用事件
+onclick    鼠标在元素上按下又松开：单击
+ondblclick 双击
+onkeydown  按键按下
+onkeyup    按键松开
+onkeypress 焦点在一个元素按下按键又松开
+onmousedown 鼠标在元素上按下
+onmouseup  鼠标在元素上松开
+onmousemove 鼠标移动
+onmouseover 鼠标进入，子元素会自动绑定此事件，也叫做支持冒泡
+onmouseout  鼠标离开
+onmouseenter 鼠标进入，区别是子元素不会自动绑定此事件，也叫做不支持冒泡
+onmouseleave 鼠标离开
+
+// 使用实例
+// 1. 在标签的事件属性中指定要执行的js代码
+    <div onclick="alert('clicked');">hello</div> 
+        -------------------------------------
+        function handleClick(){
+        // do something
+    }
+// 执行的是一个函数
+<div onclick="handleClick();" >hello</div> 
+
+// 2. [常用，兼容性好]通过元素对象指定事件处理函数[可以用命名函数，也可以用匿名函数]，也叫DOM 0级事件处理程序
+var btn = document.getElementById("btn");
+btn.onclick = function(){
+    // do something
+}
+
+// 3. DOM 2级事件处理程序. element.addEventListener(eventname,handleFun,bEventStream), 事件流，默认false，表示事件冒泡，true表示事件捕获。 此方法在IE9之前不支持。对应的删除事件处理程序的方法是element.removeEventListener(eventname,handleFun,bEventStream);此时，响应函数不能是匿名函数
+btn.addEventListener("click",function(){
+    console.log("hello");
+},false); // 这种方式不能删除函数，必须是命名函数
+// 这种方式为同一事件添加的多个事件处理程序可以同时存在，按添加的顺序进行执行，而不会进行覆盖。
+
+// 4. 针对IE添加事件处理函数
+element.attachEvent("onclick",function(){
+    console.log("clicked"); 
+});
+element.detachEvent("onclick",fn);
+
+// 所以DOM2的兼容写法如下：
+function addEvent(element, eventName,callback,eventStream){
+    if(element.addEventListener == undefined){
+        element.attachEvent("on"+eventName, callback);
+    }else{
+        element.addEventListener(eventName,callback,eventStream);
+    }
+    return;
+}
+   ```
+
+   注意事项：
+
+   - 由于事件处理函数是元素的一个属性方法，所以可以使用this来获取当前元素的其他属性。
+   - 多次指定事件处理函数时，由于HTML标签属性时从后向前解析，所以第一个生效，element.onclick 是从上往下执行，所以最后一个生效。
+   - 事件流：在元素布局时，子元素是在父元素父元素内部(上面)显示的，如果我们在子元素内点击鼠标，那么子元素和父元素都能触发点击事件，事件流指的就是事件在子元素和父元素之间的顺序。冒泡就是先触发子元素的事件，然后向父元素传递。捕获就是父元素先触发事件，然后子元素才触发事件。默认是冒泡。
+
+
+
+**事件对象**
+
+在事件处理函数中可以添加一个参数来接收事件对象。
+
+```js
+var div = document.getElementById("box");
+div.onclick=function(e){
+    console.log(e);
+}
+```
+
+但是这种方法在IE8及以下是不支持的，在事件处理函数中需要使用`window.event`来获取事件对象，兼容的写法如下：
+
+```js
+div.onclick = function(e){
+    e = e || window.event;
+    // do something with e
+}
+```
+
+事件对象的常用属性和方法
+
+```js
+e.type // 事件类型
+e.altKey // Alt 键是否按下
+e.shiftKey // shift 键是否按下
+e.ctrlKey // ctrl键是否按下
+e.keyCode // 当键盘事件发生时，它表示按键的键码值，使用它就知道哪个按键被按下了
+e.clientX // 浏览器窗口客户区的坐标，不受滚动条影响
+e.clientY
+e.pageX // 相对于页面的位置坐标，受滚动条影响
+e.pageY
+e.offsetX // 鼠标光标相对于所在元素的边界X Y的坐标
+e.offsetY
+e.screenX // 屏幕坐标系中的位置
+e.screenY 
+e.currentTarget // 当前目标
+```
+
+
+
+
+
+
+
+
 
 
 
