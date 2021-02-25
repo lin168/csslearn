@@ -2,6 +2,10 @@
 
 在前端开发中，HTML语言用来定义网页的内容，CSS用来定义网页的布局和样式，JavaScript则用来对网页进行编程。
 
+[TOC]
+
+
+
 ## JavaScript是什么
 
 JavaScript是一种网页脚本语言，由浏览器中的解析器执行。它的出现是为了解决浏览器中页面与用户交互的问题。1995年5月，网景公司对这门要设计的语言的要求是“必须看上去与Java足够相似，但还要比java简单，使得非专业的网页作者也能很快上手”。被安排做这项工作的人就是Brendan Eich。作为JavaScript之父，当时实际上只是为了应付公司安排的工作，甚至是设计这门语言只用了10天。基本的设计思路是这样的：
@@ -725,13 +729,9 @@ hobbys[1].checked=false;
 用户在元素上进行的鼠标、键盘操作称为事件，另外浏览器在处理文档处理中的某些特殊的状态也称为事件，比如页面加载完成，页面开始卸载等。对事件的处理就是为事件添加一个响应函数，在响应函数中处理事件内容
 
    ```js
-// 常用事件
+// 鼠标事件
 onclick    鼠标在元素上按下又松开：单击
 ondblclick 双击
-oncontextmenu 右击，弹出上下文菜单事件
-onkeydown  按键按下
-onkeyup    按键松开
-onkeypress 焦点在一个元素按下按键又松开
 onmousedown 鼠标在元素上按下
 onmouseup  鼠标在元素上松开
 onmousemove 鼠标移动
@@ -739,6 +739,27 @@ onmouseover 鼠标进入，当进入和离开子元素的范围时也会触发�
 onmouseout  鼠标离开，当进入和离开子元素的范围时也会触发此事件，支持冒泡
 onmouseenter 鼠标进入，子元素不触发此事件，不支持冒泡，
 onmouseleave 鼠标离开，子元素不触发此事件，不支持冒泡
+// 鼠标右键事件
+oncontextmenu 右击，弹出上下文菜单事件
+// 键盘事件
+onkeydown  按键按下，通常在表单元素上添加，也可以在document对象上添加(事件冒泡)
+onkeyup    按键松开
+onkeypress 按键按下时不断触发，只对主键区的非控制键有效
+// 表单及表单元素事件
+onfocus    表单元素获取焦点时触发
+onblur     表单元素失去焦点时触发，通常在这里进行表单输入校验
+oninput    表单元素中输入的内容变化时触发
+onchange   表单元素中输入的内容变化并且输入焦点时触发
+onsubmit   表单事件，在表单的submit按钮按下时触发，在事件处理函数中返回false可以阻断默认提交处理。
+onreset    表单事件，在表单reset按钮按下时触发
+// 滚动条事件
+onscroll   滚轮事件，可以加在window对象上，也可以加在其它元素上，比如document body div等，另外，元素中滚动的距离可以用element.scrollTop和element.scrollLeft来获取和设置，常见的回到顶部功能就是使用document.documentElement.scrollTop=0;来实现的
+// 触摸事件，开发时可以在控制台指定手机模式进行调试
+ontouchstart 手指触摸屏幕时触发
+ontouchmove  手指在屏幕上移动时触发
+ontouchend   手指离开屏幕时触发
+ontouchcancel 当系统停止跟踪触摸时触发，比如电话接入或者弹出信息时，会中断之前的触摸过程，一般在这个操作中进行暂停操作
+
 
 // 使用实例
 // 1. 在标签的事件属性中指定要执行的js代码
@@ -841,118 +862,128 @@ e.stopPropagation(); // 取消事件的进一步捕获或冒泡，IE8以前用e.
 
 
 
+### 触摸事件对象
+
+在触摸事件中的事件对象为触摸事件对象，它继承自触摸事件，但也有自己特有的属性和方法
+
+```js
+e.touches      // 事件发生时，所有的触摸点(Touch对象)数组，目前一般触摸屏都支持五点触控，高级设备上甚至支持十点触控
+e.targetTouches  // 事件发生时，和当前元素相关的触摸点信息，常用
+e.changedTouches // 事件发生时，变化的触摸点信息，比如新增加的触摸点，或者松开的触摸点
+
+触摸点用Touch对象表示
+touch.identifier ：触摸ID
+screenX  screenY ： 触摸点屏幕坐标
+clientX clientY ： 客户区坐标
+pageX pageY  ： 页面坐标
+radiusX  radiusY ： 触摸点半径
+rotationAngele： 旋转角度
+force ： 力度
+target  ：触摸的元素对象
+
+
+```
+
+## 常用功能
 
 
 
+### typeof
 
-## 特殊语法
+typeof 获取变量类型
 
-1. 变量声明提前
+```js
+// typeof :关键字， 后跟变量名可以获取变量的类型，比如
+var num = 6;
+console.log(num, typeof num);
+if(typeof num == "number"){
+    console.log("is number");
+}
+```
 
-   ```js
-   console.log(a); // undefined
-   var a=100;
-   console.log(a); // 100
-   ```
 
-   执行第一行代码并不会抛出异常，因为解释器在开始执行脚本中的代码块之前自动声明代码块中的所有变量，之后脚本中的声明语句会被自动忽略，只执行赋值操作。
 
-2. typeof 获取变量类型
+### 数据类型转换
 
-   ```js
-   // typeof :关键字， 后跟变量名可以获取变量的类型，比如
-   var num = 6;
-   console.log(num, typeof num);
-   if(typeof num == "number"){
-       console.log("is number");
-   }
-   ```
+```js
+[字符串转数值] 以下函数均会自动去除首尾的空白符
+1. Number(str): 可转换整数和浮点数，字符串数字不合法时，返回NaN。
+2. parseInt(str,radix): 字符串转整数。radix是基数，也就是进制,可省略。逐字符进行转换，遇到无法转换的字符则返回。
+3. parseFloat(str,radix)：字符串转浮点数。radix是基数，可省略。同样逐字符转换。
 
-3. 数据类型转换
-
-   ```code
-   [字符串转数值] 以下函数均会自动去除首尾的空白符
-   1. Number(str): 可转换整数和浮点数，字符串数字不合法时，返回NaN。
-   2. parseInt(str,radix): 字符串转整数。radix是基数，也就是进制,可省略。逐字符进行转换，遇到无法转换的字符则返回。
-   3. parseFloat(str,radix)：字符串转浮点数。radix是基数，可省略。同样逐字符转换。
-   
-   [浮点数转整数]
-   ```
-   
+[浮点数转整数]
 1. parseInt(fnum,radix);参数同样可以是浮点数，小数部分直接丢弃
-   2. Math.round(); 四舍五入
-   3. Math.floor(num); 小于num的最大整数
-   4. Math.ceil(num); 大于num的最小整数
-   
-   
-   [数值转字符串]
-   1. 利用+运算符，数字加空字符串时会自动转换为字符串
-   2. 利用变量（对象）的toString()方法
+2. Math.floor(); 小于num的最大整数
+3. Math.round(); 四舍五入
+4. Math.ceil();  大于num的最小整数
+
+[数值转字符串]
+1. 利用+运算符，数字加空字符串时会自动转换为字符串
+2. 利用变量（对象）的toString()方法
    let num = 3.14;
    console.log(num.toString());
-   3. 利用String对象的构造函数String(num); 它可以转换的各种类型的数据
-   ```
-   
-   转换失败时并不会抛出异常，而是返回`NaN`
-   ```
-   
-5. 字符串常用属性和方法
+3. 利用String对象的构造函数String(num); 它可以转换的各种类型的数据
+```
 
-   ```js
-   var str = "hello string"
-   console.log(str.length);  // length 字符串长度，字符数
-   
-   str.charAt(index); // 返回指定索引处的字符(string类型)，索引从0开始
-   str.charCodeAt(index); // 返回指定索引处的字符的Unicode编码，中是20013，\u4E2D
-   str.concat(str1,str2,...); // 拼接字符串，等于+
-   str.substring(iStart,iEnd);// 截取子字符串，开始下标和结束下标(可省略，表示到结尾)
-   str.substr(iStart,len); // 截取子字符串，开始下标和长度(可省略，表示到结尾)
-   str.slice(iStart,iEnd); // 截取子字符串，返回的是原字符串的切片【修改时会反应到原字符串，除非生成了新字符串】
-   str.toUpperCase(); // 转换为大写，不改变原字符串
-   str.toLowerCase(); // 转换为小写
-   str.indexOf(substr,iStart); // 从指定下标开始查找子字符串，iStart省略时表示从第一个字符开始。返回下标，找不到返回-1
-   str.lastIndexOf(substr,iStart); // 从指定下标开始向前查找子字符串，iStart省略时表示从最后一个字符开始。
-   str.search(str:regexp); //查找子字符串，支持正则表达式。返回下标
-   str.match(str:regexp); // 返回匹配的字串,支持正则表达式。
-   str.trim(); // 去除字符串两端的空白符
-   str.replace(oldstr, newstr); // 子字符串替换，支持正则表达式。默认只替换第一个
-   str.split(sep:string); // 分隔字符串，返回数组。用空字符串作为分隔符时，是按字符分隔，也就是把字符串转换为字符数组。未指定分隔符时，则把数组串转换为数组，数组中只有一个元素。
-   
-   // ES6\7 新增方法
-   str.include(substr); // 是否包含子字符串
-   str.startsWith(substr); // 是否以某个字符串开头
-   str.endsWith(substr); // 是否以某个字符串结尾
-   str.repeat(count); // 字符串重复n次组成的新字符串
-   str.padStart(tarLen,str1); // 如果str的长度不足tarLen，则使用str1在开始处填充
-   str.padEnd(tarLen,str1); // 在字符串结尾补充
-   
-   // 字符串与Base64编码， 下面几个是window对象的方法，可以直接使用
-   btoa(str); 字符串或二进制值转为Base64编码
-   atob(base64); Base64编码转为原来的值
-   
-   // 字符串与URI
-   encodeURIComponent(str); 将非ASCII码字符转为URI编码
-   decodeURIComponent(); 将转码后的内容转为非ASCII内容
-   
-   ```
+转换失败时并不会抛出异常，而是返回`NaN`
 
-   需要注意的就是`split`的用法，以及支持正则表达式的`search\match\replace`
 
-6. 模板字符串：使用反引号包围，中间用${}包围JS表达式
 
-   ```js
-   console.log(`${num1}+${num2}=${sum}`);
-   ```
+### 字符串常用属性和方法
 
-7. 数值型对象的方法
+```js
+模板字符串：使用反引号包围，中间用${}包围JS表达式
+console.log(`${num1}+${num2}=${sum}`);
 
-   ```js
-   let num = Math.PI;
-   console.log(num.toFixed(2)); // 保留两位小数 "3.14"
-   console.log(num.toPrecision(2)); // 数据精度，3.1
-   ```
+var str = "hello string"
+console.log(str.length);  // length 字符串长度，字符数
 
-   
+str.charAt(index); // 返回指定索引处的字符(string类型)，索引从0开始
+str.charCodeAt(index); // 返回指定索引处的字符的Unicode编码，中是20013，\u4E2D
+str.concat(str1,str2,...); // 拼接字符串，等于+
+str.substring(iStart,iEnd);// 截取子字符串，开始下标和结束下标(可省略，表示到结尾)
+str.substr(iStart,len); // 截取子字符串，开始下标和长度(可省略，表示到结尾)
+str.slice(iStart,iEnd); // 截取子字符串，返回的是原字符串的切片【修改时会反应到原字符串，除非生成了新字符串】
+str.toUpperCase(); // 转换为大写，不改变原字符串
+str.toLowerCase(); // 转换为小写
+str.indexOf(substr,iStart); // 从指定下标开始查找子字符串，iStart省略时表示从第一个字符开始。返回下标，找不到返回-1
+str.lastIndexOf(substr,iStart); // 从指定下标开始向前查找子字符串，iStart省略时表示从最后一个字符开始。
+str.search(str:regexp); //查找子字符串，支持正则表达式。返回下标
+str.match(str:regexp); // 返回匹配的字串,支持正则表达式。
+str.trim(); // 去除字符串两端的空白符
+str.replace(oldstr, newstr); // 子字符串替换，支持正则表达式。默认只替换第一个
+str.split(sep:string); // 分隔字符串，返回数组。用空字符串作为分隔符时，是按字符分隔，也就是把字符串转换为字符数组。未指定分隔符时，则把数组串转换为数组，数组中只有一个元素。
+
+// ES6\7 新增方法
+str.include(substr); // 是否包含子字符串
+str.startsWith(substr); // 是否以某个字符串开头
+str.endsWith(substr); // 是否以某个字符串结尾
+str.repeat(count); // 字符串重复n次组成的新字符串
+str.padStart(tarLen,str1); // 如果str的长度不足tarLen，则使用str1在开始处填充
+str.padEnd(tarLen,str1); // 在字符串结尾补充
+
+// 字符串与Base64编码， 下面几个是window对象的方法，可以直接使用
+btoa(str); 字符串或二进制值转为Base64编码
+atob(base64); Base64编码转为原来的值
+
+// 字符串与URI
+encodeURIComponent(str); 将非ASCII码字符转为URI编码
+decodeURIComponent(); 将转码后的内容转为非ASCII内容
+```
+
+需要注意的就是`split`的用法，以及支持正则表达式的`search\match\replace`
+
+
+
+### Number对象常用方法
+
+```js
+let num = Math.PI;
+console.log(num.toFixed(2)); // 保留两位小数 "3.14"
+console.log(num.toPrecision(2)); // 数据精度，3.1
+```
+
+
 
 ### 定时器
 
@@ -1025,7 +1056,6 @@ document.onkeydown = function(e){
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test Media</title>
     <style>
         *{
@@ -1049,8 +1079,6 @@ document.onkeydown = function(e){
             background-color: #ddd;
             padding-left: 5px;
         }
-
-
     </style>
 </head>
 <body>
