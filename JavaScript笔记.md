@@ -1199,9 +1199,52 @@ document.onkeydown = function(e){
     </script>
 </body>
 </html>
-
-    
 ```
+
+
+
+### 触摸屏 拖动
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>testJS</title>
+    <style>
+        div{
+            width: 200px;
+            height: 200px;
+            background-color: skyblue;
+            position: fixed;
+            left: 0px;
+            top: 0px;
+        }
+    </style>
+</head>
+<body>
+    <div id="box"></div>
+    <script>
+        let box = document.getElementById("box");
+        box.ontouchstart = function(e){
+            let x = e.targetTouches[0].clientX;
+            let y = e.targetTouches[0].clientY;
+            let left = parseInt(box.offsetLeft);
+            let top = parseInt(box.offsetTop);
+
+            box.ontouchmove = function(e){
+                box.style.left =  left + e.targetTouches[0].clientX - x +"px";
+                box.style.top = top + e.targetTouches[0].clientY -y +"px";
+            }
+        }
+    </script>
+</body>
+</html>
+```
+
+由于触摸事件和鼠标事件的内容是不同的，所以需要使用不同的方法计算坐标。在鼠标拖动中，我们可以从事件中获取触摸点相对于元素和相对于客户区的坐标，相减之后就是元素的坐标。但是在触摸事件中，我们知道的是触摸点相对于客户区的坐标clientX和元素相对于父元素的坐标offsetLeft，移动过程中相对于客户区的坐标减去按下时的坐标，再加上初始的left和top就是就是当前的left和top
+
+
 
 
 
