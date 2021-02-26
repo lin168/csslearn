@@ -1119,6 +1119,90 @@ document.onkeydown = function(e){
 
 
 
+### 列表项循环滚动
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Media</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        #msg{
+            width: 500px;
+            height: 300px;
+            border: 1px solid;
+            margin: 100px auto;
+            line-height: 2em;
+            overflow: hidden;
+        }
+        ul{
+            padding-left: 10px;
+        }
+
+        li{
+            list-style: none;
+        }
+        ul span{
+            margin-right: 10px;
+        }
+        a{
+            color: #000;
+            text-decoration: none;
+        }
+        a:hover{
+            color: red;
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="msg">
+        <ul>
+            <li><span>1.</span><a href="#">法国国家电视台发文点赞总台牛年春晚科技感十足</a></li>
+            <li><span>2.</span><a href="#">重新定义超大屏 Redmi MAX 86智能电视仅</a></li>
+            <li><span>3.</span><a href="#">5G消息商用进行时：三大运营商联手推动产业生态探索</a></li>
+            <li><span>4.</span><a href="#">比超级计算机快百万亿倍 仅是量子计算“星辰大海”的</a></li>
+            <li><span>5.</span><a href="#">审视数据安全在国家层面的重要意义</a></li>
+            <li><span>6.</span><a href="#">疫情之下 5G等成填补数字鸿沟关键技术</a></li>
+            <li><span>7.</span><a href="#">互联网货运平台要严把“安全关”</a></li>
+            <li><span>8.</span><a href="#">手机制造商频发车联网、自动驾驶专利，究竟意欲何为？</a></li>
+            <li><span>9.</span><a href="#">百度健康核酸检测线上预约量增10倍</a></li>
+            <li><span>10.</span><a href="#">女子因吃了一份被送错的外卖，家门遭泼红漆，饿了么回</a></li>
+            <li><span>11.</span><a href="#">井下534米！探秘5G矿山!</a></li>
+        </ul>
+    </div>
+	<script>
+        let msgbox = document.querySelector("#msg");
+        let ul = document.querySelector("#msg>ul");
+        ul.innerHTML += ul.innerHTML;
+
+        function rollup(){
+            msgbox.scrollTop += 1;
+            if(msgbox.scrollTop == ul.offsetHeight/2){
+                msgbox.scrollTop = 0;
+            }
+        }
+        let timerid = setInterval(rollup, 20);
+        msgbox.onmouseover = function(){
+            clearInterval(timerid);
+        }
+        msgbox.onmouseout = function(){
+            timerid = setInterval(rollup,20);
+        }
+    </script>
+</body>
+</html>
+
+    
+```
+
 
 
 

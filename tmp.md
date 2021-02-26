@@ -1,597 +1,306 @@
+
 # 常用类
 
 
 
-## Browser &Frame
+
+
+## 工具类
 
 
 
-### CefBrowserHost
+### CefCommandLine
 
 ```c
-// 表示浏览器进程中浏览器窗口，只能在browser进程调用
-class CefBrowserHost : public virtual CefBaseRefCounted {
+// 用来创建和解析命令行参数的工具类
+// 命令行参数中的开关可以用'--','-','/'开头，开关也可以用=连接一个值，比如-switch=value
+// "--"参数可以终止开关解析，后续所有的标记，无论是什么前缀都当做非开关参数处理。
+// 开关名称是大小写敏感的，这个类可以在CefInitialize()之前调用
+class CefCommandLine : public virtual CefBaseRefCounted {
  public:
-  typedef cef_drag_operations_mask_t DragOperationsMask;
-  typedef cef_file_dialog_mode_t FileDialogMode;
-  typedef cef_mouse_button_type_t MouseButtonType;
-  typedef cef_paint_element_type_t PaintElementType;
+  typedef std::vector<CefString> ArgumentList;
+  typedef std::map<CefString, CefString> SwitchMap;
 
-  // 使用windowInfo指定的窗口信息创建一个浏览器窗口。
-  // 所有的参数都会进行内部拷贝，实际的窗口会在browser进程的UI线程创建，如果request_context是空的，则使用全局请求上下文
-  // 这个方法可以在browser进程的任意线程中调用，并且不会阻塞，extra_info参数是可选的，它可以给CefRenderProcessHandler::OnBrowserCreated()传递数据
-  static bool CreateBrowser(const CefWindowInfo& windowInfo,
-                            CefRefPtr<CefClient> client,
-                            const CefString& url,
-                            const CefBrowserSettings& settings,
-                            CefRefPtr<CefDictionaryValue> extra_info,
-                            CefRefPtr<CefRequestContext> request_context);
+  // 创建一个CefCommandLine实例
+  static CefRefPtr<CefCommandLine> CreateCommandLine();
 
-  // 与CreateBrowser基本一样，唯一的不同是它是同步的，直到浏览器创建成功后才会返回
-  static CefRefPtr<CefBrowser> CreateBrowserSync(
-      const CefWindowInfo& windowInfo,
-      CefRefPtr<CefClient> client,
-      const CefString& url,
-      const CefBrowserSettings& settings,
-      CefRefPtr<CefDictionaryValue> extra_info,
-      CefRefPtr<CefRequestContext> request_context);
+  // 返回全局的CefCommandLine单例对象，只读
+  static CefRefPtr<CefCommandLine> GetGlobalCommandLine();
 
-  // 获取托管的browser对象
-  virtual CefRefPtr<CefBrowser> GetBrowser() = 0;
+  // 对象是否有效
+  virtual bool IsValid() = 0;
 
-  // 请求浏览器关闭，JavaScript中的onbeforeunload事件会触发，如果force_close是false，则允许弹出提示框让用户选择是否关闭
-  // 如果为true，则直接执行关闭操作，无法进行提示，然后导致CefLifeSpanHandler::DoClose()被调用
-  virtual void CloseBrowser(bool force_close) = 0;
+  // 对象是否只读
+  virtual bool IsReadOnly() = 0;
 
-  // 帮助关闭浏览器。可以在顶级窗口的关闭消息中调用此方法，它内部调用CloseBrowser(false),然后执行关闭操作并返回false
-  // 再次调用时则返回true
-  virtual bool TryCloseBrowser() = 0;
+  // 返回此对象的深拷贝
+  virtual CefRefPtr<CefCommandLine> Copy() = 0;
+
+  // 用argc和argv进行初始化
+  virtual void InitFromArgv(int argc, const char* const* argv) = 0;
+
+  // 使用命令行字符串进行初始化，命令行字符串可以用GetCommandLineW()获取
+  virtual void InitFromString(const CefString& command_line) = 0;
+
+  // 重置所有的命令行开关和参数
+  virtual void Reset() = 0;
+
+  // 获取原始的命令行字符串并保存到CefString数组中
+  virtual void GetArgv(std::vector<CefString>& argv) = 0;
+
+  // 获取返回的命令行字符串
+  virtual CefString GetCommandLineString() = 0;
+  
+  // 获取命令行中的程序部分
+  virtual CefString GetProgram() = 0;
+
+  // 设置命令行中的程序部分
+  virtual void SetProgram(const CefString& program) = 0;
+
+  // 命令行中是否有开关
+  virtual bool HasSwitches() = 0;
+
+  // 命令行中是否有指定开关
+  virtual bool HasSwitch(const CefString& name) = 0;
+
+  // 获取指定开关的值，如果没有值则返回空字符串
+  virtual CefString GetSwitchValue(const CefString& name) = 0;
+
+  // 返回开关的键值对
+  virtual void GetSwitches(SwitchMap& switches) = 0;
+
+  // 在命令行中添加开关，带前缀--
+  virtual void AppendSwitch(const CefString& name) = 0;
+
+  // 添加带值的开关
+  virtual void AppendSwitchWithValue(const CefString& name,
+                                     const CefString& value) = 0;
+
+  // 命令行中是否包含参数
+  virtual bool HasArguments() = 0;
+
+  // 获取命令行中程序之外的参数
+  virtual void GetArguments(ArgumentList& arguments) = 0;
+
+  // 把一个参数添加到命令行末尾
+  virtual void AppendArgument(const CefString& argument) = 0;
+
+  // 在当前命令之前插入一个新的命令，通常用于调试器，比如gdb myexe --args
+  virtual void PrependWrapper(const CefString& wrapper) = 0;
+};
+```
+
+## Cookie
+
+### CefCookie
+
+```c
+// cookie结构体，包含cookie的各个字段
+typedef struct _cef_cookie_t {
+  
+  // The cookie name.
+  cef_string_t name;
+
+  // The cookie value.
+  cef_string_t value;
+
+  // 域名，如果domain为空，则创建host cookie
+  // domain cookie以.开头存储，并且对子域可见，而主机cookie对子域不可见
+  cef_string_t domain;
+
+  // 如果path不为空，则只有访问Path路径的子URL时才会带上cookie
+  // 比如 zhidao.baidu.com 是baidu.com的子域
+  cef_string_t path;
+
+  // secure为true时，只在https协议下发送，同时限制js访问cookie
+  int secure;
+
+  // httponly为true时只能在http、https协议下使用，不允许js访问cookie(document.cookie)
+  int httponly;
+
+  // 创建事件，浏览器创建
+  cef_time_t creation;
+
+  // 上次访问时间，浏览器更新
+  cef_time_t last_access;
+
+  // 是否有过期时间，以及过期时间
+  int has_expires;
+  cef_time_t expires;
+
+  // 
+  // Same site.
+  cef_cookie_same_site_t same_site;
+
+  // 优先级
+  cef_cookie_priority_t priority;
+} cef_cookie_t;
+```
 
 
-  // 设置浏览器是否获取焦点
-  virtual void SetFocus(bool focus) = 0;
 
-  // 获取浏览器所在窗口句柄，如果浏览器包裹在CefBrowserView，那么他会返回定级的本地窗口
-  virtual CefWindowHandle GetWindowHandle() = 0;
+### CefCookieManager
 
-  // 获取打开此浏览器的浏览器所在窗口的句柄，对于非弹出式窗口返回NULL
-  virtual CefWindowHandle GetOpenerWindowHandle() = 0;
+```c
+// Cookie 管理类
+class CefCookieManager : public virtual CefBaseRefCounted {
+ public:
+  // 返回全局的Cookie管理器
+  // 默认情况下，数据保存在CefSettings.cache_path目录下.
+  // 如果callback为空，在管理器中的存储初始化完成后就会在UI线程中异步调用callback中的接口
+  // 这个接口等价于CefRequestContext::GetGlobalContext()->GetDefaultCookieManager().
+  static CefRefPtr<CefCookieManager> GetGlobalManager(
+      CefRefPtr<CefCompletionCallback> callback);
 
-  // 浏览器是否包裹在CefBrowserView中
-  virtual bool HasView() = 0;
+  // 设置管理器中支持的Scheme
+  // 如果include_defaults为true，则自动包含默认的协议(http\https\ws\wss)
+  virtual void SetSupportedSchemes(
+      const std::vector<CefString>& schemes,
+      bool include_defaults,
+      CefRefPtr<CefCompletionCallback> callback) = 0;
 
-  // 获取browser关联的client对象
-  virtual CefRefPtr<CefClient> GetClient() = 0;
+  // 在UI线程访问所有的cookie
+  // 返回的Cookie按最长路径排序，然后按创建日期升序排序，如果无法访问cookie，则返回false
+  virtual bool VisitAllCookies(CefRefPtr<CefCookieVisitor> visitor) = 0;
 
-  // 获取浏览器的请求上下文
-  virtual CefRefPtr<CefRequestContext> GetRequestContext() = 0;
+  // 在UI线程访问cookie的自己，结果会使用给定的url的scheme、host、domain过滤
+  // 如果includeHttpOnly为true，结果中也会包含HttpOnly属性
+  // 返回的cookies按照最长路径排序，然后按照最早创建日期排序，如果访问失败，则返回false
+  virtual bool VisitUrlCookies(const CefString& url,
+                               bool includeHttpOnly,
+                               CefRefPtr<CefCookieVisitor> visitor) = 0;
 
-  // 获取当前缩放等级，默认是0.0
-  virtual double GetZoomLevel() = 0;
+  // 设置一个cookie，需要提供一个cookie以及使用的url
+  // cookie的每一个属性都要按照格式设置，它会检查是否有不允许的字符
+  // 失败时返回false
+  virtual bool SetCookie(const CefString& url,
+                         const CefCookie& cookie,
+                         CefRefPtr<CefSetCookieCallback> callback) = 0;
 
-  // 修改缩放等级，0.0表示默认值
-  virtual void SetZoomLevel(double zoomLevel) = 0;
+  // 删除指定的cookie
+  // 如果url和cookie_name都指定了，那么所有host cookie和domain cookie中匹配的都会删除
+  // 如果只指定了url，所有host cookie中匹配的会被删除
+  // 如果url为空，所有的cookie都会被删除
+  virtual bool DeleteCookies(const CefString& url,
+                             const CefString& cookie_name,
+                             CefRefPtr<CefDeleteCookiesCallback> callback) = 0;
 
-  // 打开一个文件选择、保存对话框，在任何时候，都只能有一个文件选择对话框处于打开的状态，
-  // mode表示打开的模式,title 是对话框的标题，default_file_path默认文件路径，accept_filters 是选择过滤器
-  // 格式可以是下面三种的联合a. 小写的MIME类型("text/*") b.单独的文件后缀".txt" c.描述和文件后缀的集合("Image Types|.png;.gif;.jpg")
-  // selected_accept_filer是基于0的选择过滤器
-  // 在点击对话框的确定或取消按钮时会执行callback的OnFileDialogDismissed()方法
-  virtual void RunFileDialog(FileDialogMode mode,
-                             const CefString& title,
-                             const CefString& default_file_path,
-                             const std::vector<CefString>& accept_filters,
-                             int selected_accept_filter,
-                             CefRefPtr<CefRunFileDialogCallback> callback) = 0;
+  // 将备份存储刷新到磁盘
+  virtual bool FlushStore(CefRefPtr<CefCompletionCallback> callback) = 0;
+};
+```
 
-  // 使用CefDownloadHandler下载指定URL的文件
-  virtual void StartDownload(const CefString& url) = 0;
+### CefCookieVisitor
 
-  // 下载image_url指向的图像，下载完成后执行callback中的回调方法。
-  // 如果is_favicon为true，就不会发送cookies，也不接收cookies。
-  // 如果图片分辨率大于max_image_size,则自动过滤，如果没有小于max_image_size的图像，则下载尺寸最小的图像,并修改大小为max_image_size
-  // 如果max_image_size为0，则表示不限制
-  // bypass_cache 表示是否绕过缓存
-  virtual void DownloadImage(const CefString& image_url,
-                             bool is_favicon,
-                             uint32 max_image_size,
-                             bool bypass_cache,
-                             CefRefPtr<CefDownloadImageCallback> callback) = 0;
-
-  // Print the current browser contents.
-  virtual void Print() = 0;
-
-  ///
-  // Print the current browser contents to the PDF file specified by |path| and
-  // execute |callback| on completion. The caller is responsible for deleting
-  // |path| when done. For PDF printing to work on Linux you must implement the
-  // CefPrintHandler::GetPdfPaperSize method.
-  ///
-  /*--cef(optional_param=callback)--*/
-  virtual void PrintToPDF(const CefString& path,
-                          const CefPdfPrintSettings& settings,
-                          CefRefPtr<CefPdfPrintCallback> callback) = 0;
-
-  ///
-  // Search for |searchText|. |identifier| must be a unique ID and these IDs
-  // must strictly increase so that newer requests always have greater IDs than
-  // older requests. If |identifier| is zero or less than the previous ID value
-  // then it will be automatically assigned a new valid ID. |forward| indicates
-  // whether to search forward or backward within the page. |matchCase|
-  // indicates whether the search should be case-sensitive. |findNext| indicates
-  // whether this is the first request or a follow-up. The CefFindHandler
-  // instance, if any, returned via CefClient::GetFindHandler will be called to
-  // report find results.
-  ///
-  /*--cef()--*/
-  virtual void Find(int identifier,
-                    const CefString& searchText,
-                    bool forward,
-                    bool matchCase,
-                    bool findNext) = 0;
-
-  ///
-  // Cancel all searches that are currently going on.
-  ///
-  /*--cef()--*/
-  virtual void StopFinding(bool clearSelection) = 0;
-
-  ///
-  // Open developer tools (DevTools) in its own browser. The DevTools browser
-  // will remain associated with this browser. If the DevTools browser is
-  // already open then it will be focused, in which case the |windowInfo|,
-  // |client| and |settings| parameters will be ignored. If |inspect_element_at|
-  // is non-empty then the element at the specified (x,y) location will be
-  // inspected. The |windowInfo| parameter will be ignored if this browser is
-  // wrapped in a CefBrowserView.
-  ///
-  /*--cef(optional_param=windowInfo,optional_param=client,
-          optional_param=settings,optional_param=inspect_element_at)--*/
-  virtual void ShowDevTools(const CefWindowInfo& windowInfo,
-                            CefRefPtr<CefClient> client,
-                            const CefBrowserSettings& settings,
-                            const CefPoint& inspect_element_at) = 0;
-
-  ///
-  // Explicitly close the associated DevTools browser, if any.
-  ///
-  /*--cef()--*/
-  virtual void CloseDevTools() = 0;
-
-  ///
-  // Returns true if this browser currently has an associated DevTools browser.
-  // Must be called on the browser process UI thread.
-  ///
-  /*--cef()--*/
-  virtual bool HasDevTools() = 0;
-
-  ///
-  // Send a method call message over the DevTools protocol. |message| must be a
-  // UTF8-encoded JSON dictionary that contains "id" (int), "method" (string)
-  // and "params" (dictionary, optional) values. See the DevTools protocol
-  // documentation at https://chromedevtools.github.io/devtools-protocol/ for
-  // details of supported methods and the expected "params" dictionary contents.
-  // |message| will be copied if necessary. This method will return true if
-  // called on the UI thread and the message was successfully submitted for
-  // validation, otherwise false. Validation will be applied asynchronously and
-  // any messages that fail due to formatting errors or missing parameters may
-  // be discarded without notification. Prefer ExecuteDevToolsMethod if a more
-  // structured approach to message formatting is desired.
-  //
-  // Every valid method call will result in an asynchronous method result or
-  // error message that references the sent message "id". Event messages are
-  // received while notifications are enabled (for example, between method calls
-  // for "Page.enable" and "Page.disable"). All received messages will be
-  // delivered to the observer(s) registered with AddDevToolsMessageObserver.
-  // See CefDevToolsMessageObserver::OnDevToolsMessage documentation for details
-  // of received message contents.
-  //
-  // Usage of the SendDevToolsMessage, ExecuteDevToolsMethod and
-  // AddDevToolsMessageObserver methods does not require an active DevTools
-  // front-end or remote-debugging session. Other active DevTools sessions will
-  // continue to function independently. However, any modification of global
-  // browser state by one session may not be reflected in the UI of other
-  // sessions.
-  //
-  // Communication with the DevTools front-end (when displayed) can be logged
-  // for development purposes by passing the
-  // `--devtools-protocol-log-file=<path>` command-line flag.
-  ///
-  /*--cef()--*/
-  virtual bool SendDevToolsMessage(const void* message,
-                                   size_t message_size) = 0;
-
-  ///
-  // Execute a method call over the DevTools protocol. This is a more structured
-  // version of SendDevToolsMessage. |message_id| is an incremental number that
-  // uniquely identifies the message (pass 0 to have the next number assigned
-  // automatically based on previous values). |method| is the method name.
-  // |params| are the method parameters, which may be empty. See the DevTools
-  // protocol documentation (linked above) for details of supported methods and
-  // the expected |params| dictionary contents. This method will return the
-  // assigned message ID if called on the UI thread and the message was
-  // successfully submitted for validation, otherwise 0. See the
-  // SendDevToolsMessage documentation for additional usage information.
-  ///
-  /*--cef(optional_param=params)--*/
-  virtual int ExecuteDevToolsMethod(int message_id,
-                                    const CefString& method,
-                                    CefRefPtr<CefDictionaryValue> params) = 0;
-
-  ///
-  // Add an observer for DevTools protocol messages (method results and events).
-  // The observer will remain registered until the returned Registration object
-  // is destroyed. See the SendDevToolsMessage documentation for additional
-  // usage information.
-  ///
-  /*--cef()--*/
-  virtual CefRefPtr<CefRegistration> AddDevToolsMessageObserver(
-      CefRefPtr<CefDevToolsMessageObserver> observer) = 0;
-
-  ///
-  // Retrieve a snapshot of current navigation entries as values sent to the
-  // specified visitor. If |current_only| is true only the current navigation
-  // entry will be sent, otherwise all navigation entries will be sent.
-  ///
-  /*--cef()--*/
-  virtual void GetNavigationEntries(
-      CefRefPtr<CefNavigationEntryVisitor> visitor,
-      bool current_only) = 0;
-
-  ///
-  // If a misspelled word is currently selected in an editable node calling
-  // this method will replace it with the specified |word|.
-  ///
-  /*--cef()--*/
-  virtual void ReplaceMisspelling(const CefString& word) = 0;
-
-  ///
-  // Add the specified |word| to the spelling dictionary.
-  ///
-  /*--cef()--*/
-  virtual void AddWordToDictionary(const CefString& word) = 0;
-
-  ///
-  // Returns true if window rendering is disabled.
-  ///
-  /*--cef()--*/
-  virtual bool IsWindowRenderingDisabled() = 0;
-
-  ///
-  // Notify the browser that the widget has been resized. The browser will first
-  // call CefRenderHandler::GetViewRect to get the new size and then call
-  // CefRenderHandler::OnPaint asynchronously with the updated regions. This
-  // method is only used when window rendering is disabled.
-  ///
-  /*--cef()--*/
-  virtual void WasResized() = 0;
-
-  ///
-  // Notify the browser that it has been hidden or shown. Layouting and
-  // CefRenderHandler::OnPaint notification will stop when the browser is
-  // hidden. This method is only used when window rendering is disabled.
-  ///
-  /*--cef()--*/
-  virtual void WasHidden(bool hidden) = 0;
-
-  ///
-  // Send a notification to the browser that the screen info has changed. The
-  // browser will then call CefRenderHandler::GetScreenInfo to update the
-  // screen information with the new values. This simulates moving the webview
-  // window from one display to another, or changing the properties of the
-  // current display. This method is only used when window rendering is
-  // disabled.
-  ///
-  /*--cef()--*/
-  virtual void NotifyScreenInfoChanged() = 0;
-
-  ///
-  // Invalidate the view. The browser will call CefRenderHandler::OnPaint
-  // asynchronously. This method is only used when window rendering is
-  // disabled.
-  ///
-  /*--cef()--*/
-  virtual void Invalidate(PaintElementType type) = 0;
-
-  ///
-  // Issue a BeginFrame request to Chromium.  Only valid when
-  // CefWindowInfo::external_begin_frame_enabled is set to true.
-  ///
-  /*--cef()--*/
-  virtual void SendExternalBeginFrame() = 0;
-
-  ///
-  // Send a key event to the browser.
-  ///
-  /*--cef()--*/
-  virtual void SendKeyEvent(const CefKeyEvent& event) = 0;
-
-  ///
-  // Send a mouse click event to the browser. The |x| and |y| coordinates are
-  // relative to the upper-left corner of the view.
-  ///
-  /*--cef()--*/
-  virtual void SendMouseClickEvent(const CefMouseEvent& event,
-                                   MouseButtonType type,
-                                   bool mouseUp,
-                                   int clickCount) = 0;
-
-  ///
-  // Send a mouse move event to the browser. The |x| and |y| coordinates are
-  // relative to the upper-left corner of the view.
-  ///
-  /*--cef()--*/
-  virtual void SendMouseMoveEvent(const CefMouseEvent& event,
-                                  bool mouseLeave) = 0;
-
-  ///
-  // Send a mouse wheel event to the browser. The |x| and |y| coordinates are
-  // relative to the upper-left corner of the view. The |deltaX| and |deltaY|
-  // values represent the movement delta in the X and Y directions respectively.
-  // In order to scroll inside select popups with window rendering disabled
-  // CefRenderHandler::GetScreenPoint should be implemented properly.
-  ///
-  /*--cef()--*/
-  virtual void SendMouseWheelEvent(const CefMouseEvent& event,
-                                   int deltaX,
-                                   int deltaY) = 0;
-
-  ///
-  // Send a touch event to the browser for a windowless browser.
-  ///
-  /*--cef()--*/
-  virtual void SendTouchEvent(const CefTouchEvent& event) = 0;
-
-  ///
-  // Send a focus event to the browser.
-  ///
-  /*--cef()--*/
-  virtual void SendFocusEvent(bool setFocus) = 0;
-
-  ///
-  // Send a capture lost event to the browser.
-  ///
-  /*--cef()--*/
-  virtual void SendCaptureLostEvent() = 0;
-
-  ///
-  // Notify the browser that the window hosting it is about to be moved or
-  // resized. This method is only used on Windows and Linux.
-  ///
-  /*--cef()--*/
-  virtual void NotifyMoveOrResizeStarted() = 0;
-
-  ///
-  // Returns the maximum rate in frames per second (fps) that CefRenderHandler::
-  // OnPaint will be called for a windowless browser. The actual fps may be
-  // lower if the browser cannot generate frames at the requested rate. The
-  // minimum value is 1 and the maximum value is 60 (default 30). This method
-  // can only be called on the UI thread.
-  ///
-  /*--cef()--*/
-  virtual int GetWindowlessFrameRate() = 0;
-
-  ///
-  // Set the maximum rate in frames per second (fps) that CefRenderHandler::
-  // OnPaint will be called for a windowless browser. The actual fps may be
-  // lower if the browser cannot generate frames at the requested rate. The
-  // minimum value is 1 and the maximum value is 60 (default 30). Can also be
-  // set at browser creation via CefBrowserSettings.windowless_frame_rate.
-  ///
-  /*--cef()--*/
-  virtual void SetWindowlessFrameRate(int frame_rate) = 0;
-
-  ///
-  // Begins a new composition or updates the existing composition. Blink has a
-  // special node (a composition node) that allows the input method to change
-  // text without affecting other DOM nodes. |text| is the optional text that
-  // will be inserted into the composition node. |underlines| is an optional set
-  // of ranges that will be underlined in the resulting text.
-  // |replacement_range| is an optional range of the existing text that will be
-  // replaced. |selection_range| is an optional range of the resulting text that
-  // will be selected after insertion or replacement. The |replacement_range|
-  // value is only used on OS X.
-  //
-  // This method may be called multiple times as the composition changes. When
-  // the client is done making changes the composition should either be canceled
-  // or completed. To cancel the composition call ImeCancelComposition. To
-  // complete the composition call either ImeCommitText or
-  // ImeFinishComposingText. Completion is usually signaled when:
-  //   A. The client receives a WM_IME_COMPOSITION message with a GCS_RESULTSTR
-  //      flag (on Windows), or;
-  //   B. The client receives a "commit" signal of GtkIMContext (on Linux), or;
-  //   C. insertText of NSTextInput is called (on Mac).
-  //
-  // This method is only used when window rendering is disabled.
-  ///
-  /*--cef(optional_param=text, optional_param=underlines)--*/
-  virtual void ImeSetComposition(
-      const CefString& text,
-      const std::vector<CefCompositionUnderline>& underlines,
-      const CefRange& replacement_range,
-      const CefRange& selection_range) = 0;
-
-  ///
-  // Completes the existing composition by optionally inserting the specified
-  // |text| into the composition node. |replacement_range| is an optional range
-  // of the existing text that will be replaced. |relative_cursor_pos| is where
-  // the cursor will be positioned relative to the current cursor position. See
-  // comments on ImeSetComposition for usage. The |replacement_range| and
-  // |relative_cursor_pos| values are only used on OS X.
-  // This method is only used when window rendering is disabled.
-  ///
-  /*--cef(optional_param=text)--*/
-  virtual void ImeCommitText(const CefString& text,
-                             const CefRange& replacement_range,
-                             int relative_cursor_pos) = 0;
-
-  ///
-  // Completes the existing composition by applying the current composition node
-  // contents. If |keep_selection| is false the current selection, if any, will
-  // be discarded. See comments on ImeSetComposition for usage.
-  // This method is only used when window rendering is disabled.
-  ///
-  /*--cef()--*/
-  virtual void ImeFinishComposingText(bool keep_selection) = 0;
-
-  ///
-  // Cancels the existing composition and discards the composition node
-  // contents without applying them. See comments on ImeSetComposition for
-  // usage.
-  // This method is only used when window rendering is disabled.
-  ///
-  /*--cef()--*/
-  virtual void ImeCancelComposition() = 0;
-
-  ///
-  // Call this method when the user drags the mouse into the web view (before
-  // calling DragTargetDragOver/DragTargetLeave/DragTargetDrop).
-  // |drag_data| should not contain file contents as this type of data is not
-  // allowed to be dragged into the web view. File contents can be removed using
-  // CefDragData::ResetFileContents (for example, if |drag_data| comes from
-  // CefRenderHandler::StartDragging).
-  // This method is only used when window rendering is disabled.
-  ///
-  /*--cef()--*/
-  virtual void DragTargetDragEnter(CefRefPtr<CefDragData> drag_data,
-                                   const CefMouseEvent& event,
-                                   DragOperationsMask allowed_ops) = 0;
-
-  ///
-  // Call this method each time the mouse is moved across the web view during
-  // a drag operation (after calling DragTargetDragEnter and before calling
-  // DragTargetDragLeave/DragTargetDrop).
-  // This method is only used when window rendering is disabled.
-  ///
-  /*--cef()--*/
-  virtual void DragTargetDragOver(const CefMouseEvent& event,
-                                  DragOperationsMask allowed_ops) = 0;
-
-  ///
-  // Call this method when the user drags the mouse out of the web view (after
-  // calling DragTargetDragEnter).
-  // This method is only used when window rendering is disabled.
-  ///
-  /*--cef()--*/
-  virtual void DragTargetDragLeave() = 0;
-
-  ///
-  // Call this method when the user completes the drag operation by dropping
-  // the object onto the web view (after calling DragTargetDragEnter).
-  // The object being dropped is |drag_data|, given as an argument to
-  // the previous DragTargetDragEnter call.
-  // This method is only used when window rendering is disabled.
-  ///
-  /*--cef()--*/
-  virtual void DragTargetDrop(const CefMouseEvent& event) = 0;
-
-  ///
-  // Call this method when the drag operation started by a
-  // CefRenderHandler::StartDragging call has ended either in a drop or
-  // by being cancelled. |x| and |y| are mouse coordinates relative to the
-  // upper-left corner of the view. If the web view is both the drag source
-  // and the drag target then all DragTarget* methods should be called before
-  // DragSource* mthods.
-  // This method is only used when window rendering is disabled.
-  ///
-  /*--cef()--*/
-  virtual void DragSourceEndedAt(int x, int y, DragOperationsMask op) = 0;
-
-  ///
-  // Call this method when the drag operation started by a
-  // CefRenderHandler::StartDragging call has completed. This method may be
-  // called immediately without first calling DragSourceEndedAt to cancel a
-  // drag operation. If the web view is both the drag source and the drag
-  // target then all DragTarget* methods should be called before DragSource*
-  // mthods.
-  // This method is only used when window rendering is disabled.
-  ///
-  /*--cef()--*/
-  virtual void DragSourceSystemDragEnded() = 0;
-
-  ///
-  // Returns the current visible navigation entry for this browser. This method
-  // can only be called on the UI thread.
-  ///
-  /*--cef()--*/
-  virtual CefRefPtr<CefNavigationEntry> GetVisibleNavigationEntry() = 0;
-
-  ///
-  // Set accessibility state for all frames. |accessibility_state| may be
-  // default, enabled or disabled. If |accessibility_state| is STATE_DEFAULT
-  // then accessibility will be disabled by default and the state may be further
-  // controlled with the "force-renderer-accessibility" and
-  // "disable-renderer-accessibility" command-line switches. If
-  // |accessibility_state| is STATE_ENABLED then accessibility will be enabled.
-  // If |accessibility_state| is STATE_DISABLED then accessibility will be
-  // completely disabled.
-  //
-  // For windowed browsers accessibility will be enabled in Complete mode (which
-  // corresponds to kAccessibilityModeComplete in Chromium). In this mode all
-  // platform accessibility objects will be created and managed by Chromium's
-  // internal implementation. The client needs only to detect the screen reader
-  // and call this method appropriately. For example, on macOS the client can
-  // handle the @"AXEnhancedUserInterface" accessibility attribute to detect
-  // VoiceOver state changes and on Windows the client can handle WM_GETOBJECT
-  // with OBJID_CLIENT to detect accessibility readers.
-  //
-  // For windowless browsers accessibility will be enabled in TreeOnly mode
-  // (which corresponds to kAccessibilityModeWebContentsOnly in Chromium). In
-  // this mode renderer accessibility is enabled, the full tree is computed, and
-  // events are passed to CefAccessibiltyHandler, but platform accessibility
-  // objects are not created. The client may implement platform accessibility
-  // objects using CefAccessibiltyHandler callbacks if desired.
-  ///
-  /*--cef()--*/
-  virtual void SetAccessibilityState(cef_state_t accessibility_state) = 0;
-
-  ///
-  // Enable notifications of auto resize via CefDisplayHandler::OnAutoResize.
-  // Notifications are disabled by default. |min_size| and |max_size| define the
-  // range of allowed sizes.
-  ///
-  /*--cef()--*/
-  virtual void SetAutoResizeEnabled(bool enabled,
-                                    const CefSize& min_size,
-                                    const CefSize& max_size) = 0;
-
-  ///
-  // Returns the extension hosted in this browser or NULL if no extension is
-  // hosted. See CefRequestContext::LoadExtension for details.
-  ///
-  /*--cef()--*/
-  virtual CefRefPtr<CefExtension> GetExtension() = 0;
-
-  ///
-  // Returns true if this browser is hosting an extension background script.
-  // Background hosts do not have a window and are not displayable. See
-  // CefRequestContext::LoadExtension for details.
-  ///
-  /*--cef()--*/
-  virtual bool IsBackgroundHost() = 0;
-
-  ///
-  //  Set whether the browser's audio is muted.
-  ///
-  /*--cef()--*/
-  virtual void SetAudioMuted(bool mute) = 0;
-
-  ///
-  // Returns true if the browser's audio is muted.  This method can only be
-  // called on the UI thread.
-  ///
-  /*--cef()--*/
-  virtual bool IsAudioMuted() = 0;
+```c
+// CefCookieManager中访问Cookie时是通过CefCookieVisitor进行的
+class CefCookieVisitor : public virtual CefBaseRefCounted {
+ public:
+  // CefCookieVisitor中的VisitAllCookies和VisitUrlCookies中访问Cookie时，会针对每个Cookie调用Visit方法一次
+  // count是当前cookie基于0的索引，total是cookie的总数，deleteCookie设为true就会删除当前访问的cookie
+  // 返回false时，就会停止cookie的访问，如果没找到cookie，就不会调用这个方法
+  virtual bool Visit(const CefCookie& cookie,
+                     int count,
+                     int total,
+                     bool& deleteCookie) = 0;
 };
 ```
 
 
 
+## 任务传递
+
+```c
+// 把任务投递到指定的线程上执行等价于 CefTaskRunner::GetForThread(threadId)->PostTask(task).
+bool CefPostTask(CefThreadId threadId, CefRefPtr<CefTask> task);
+// 把任务投递到指定的线程上，并延迟执行
+bool CefPostDelayedTask(CefThreadId threadId, CefRefPtr<CefTask> task, int64 delay_ms);
+```
+
+### CefTask
+
+```c
+// 实现这个接口进行异步任务执行
+// 如果任务成功投递并且相关的消息循环正在运行，那么就会调用Execute()方法，如果任务失败，那么任务对象会在源线程销毁
+class CefTask : public virtual CefBaseRefCounted {
+ public:
+  // 会在目标线程上执行的方法
+  virtual void Execute() = 0;
+};
+```
+
+### CefTaskRunner
+
+```c
+// 在关联线程上异步执行任务。
+// CEF维护了多个内部线程来处理不同类型的任务， cef_thread_id_t 枚举了通用的线程。
+// 任务运行器也可用于其他CEF线程中，比如V8 WebWorkder线程
+class CefTaskRunner : public virtual CefBaseRefCounted {
+ public:
+  // 获取当前线程的任务运行器，只有CEF线程中有TaskRunner，在普通线程中调用返回空引用
+  static CefRefPtr<CefTaskRunner> GetForCurrentThread();
+
+  // 获取指定线程的任务运行器
+  static CefRefPtr<CefTaskRunner> GetForThread(CefThreadId threadId);
+
+  // 判断两个对象是否相同
+  virtual bool IsSame(CefRefPtr<CefTaskRunner> that) = 0;
+
+  // 判断任务运行器是否属于当前线程
+  virtual bool BelongsToCurrentThread() = 0;
+
+  // 判断任务运行器是否属于指定线程
+  virtual bool BelongsToThread(CefThreadId threadId) = 0;
+
+  // 向任务运行器中投递任务
+  virtual bool PostTask(CefRefPtr<CefTask> task) = 0;
+
+  // 投递延迟任务
+  virtual bool PostDelayedTask(CefRefPtr<CefTask> task, int64 delay_ms) = 0;
+};
+```
 
 
 
+### CefThread
 
+```c
+// 在新线程上建立消息循环的简单的线程抽象类
+// 消费者使用CefTaskrunner在线程消息循环中执行代码，当CefThread对象销毁或调用Stop()之后，线程才会终止
+// 所有在线程消息循环中排队的挂起任务全部执行完成后，线程才会退出。
+// 可以在任何CEF线程上调用CreateThread()这个类智能用于需要专用线程的任务
+// 在大多数情形下，你可以向已有的CEF线程投递任务而不是创建一个新的
+class CefThread : public CefBaseRefCounted {
+ public:
+  // 创建并开始一个新的线程。这个方法不会阻塞，display_name是线程的标记名，priority是线程执行的优先级
+  // message_loop_type 消息循环类型指示了线程可以处理异步事件集合，如果stoppable为true，线程在对象销毁或调用Stop方法时会停止
+  // 否则线程无法停止，在关闭时会导致资源泄漏。com_init_mod指定了Windows上COM如果在线程中初始化。如果com_init_mode被指定为COM_INIT_MODE_STA，那么message_loop_type必须被设定为ML_TYPE_UI
+  static CefRefPtr<CefThread> CreateThread(
+      const CefString& display_name,
+      cef_thread_priority_t priority,
+      cef_message_loop_type_t message_loop_type,
+      bool stoppable,
+      cef_com_init_mode_t com_init_mode);
 
+  // 使用默认值创建并启动一个新的线程
+  static CefRefPtr<CefThread> CreateThread(const CefString& display_name) {
+    return CreateThread(display_name, TP_NORMAL, ML_TYPE_DEFAULT, true,
+                        COM_INIT_MODE_NONE);
+  }
+
+  // 获取线程中的CefTaskRunner对象
+  virtual CefRefPtr<CefTaskRunner> GetTaskRunner() = 0;
+
+  // 返回平台相关的线程ID
+  virtual cef_platform_thread_id_t GetPlatformThreadId() = 0;
+
+  // 其他线程等待此线程任务执行完成并退出后再执行。Stop必须和CreateThread在同一线程中调用
+  virtual void Stop() = 0;
+
+  // 判断线程是否正在运行
+  virtual bool IsRunning() = 0;
+};
+```
 
 
 
