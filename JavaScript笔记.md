@@ -739,6 +739,7 @@ onmouseover 鼠标进入，当进入和离开子元素的范围时也会触发�
 onmouseout  鼠标离开，当进入和离开子元素的范围时也会触发此事件，支持冒泡
 onmouseenter 鼠标进入，子元素不触发此事件，不支持冒泡，
 onmouseleave 鼠标离开，子元素不触发此事件，不支持冒泡
+onmousewheel 鼠标滚轮滚动事件
 // 鼠标右键事件
 oncontextmenu 右击，弹出上下文菜单事件
 // 键盘事件
@@ -803,8 +804,14 @@ function addEvent(element, eventName,callback,eventStream){
    注意事项：
 
    - 由于事件处理函数是元素的一个属性方法，所以可以使用this来获取当前元素的其他属性。
+
    - 多次指定事件处理函数时，由于HTML标签属性时从后向前解析，所以第一个生效，element.onclick 是从上往下执行，所以最后一个生效。
-   - 事件流：在元素布局时，子元素是在父元素父元素内部(上面)显示的，如果我们在子元素内点击鼠标，那么子元素和父元素都能触发点击事件，事件流指的就是事件在子元素和父元素之间的顺序。**冒泡**就是先触发子元素的事件，然后向父元素传递。捕获就是父元素先触发事件，然后子元素才触发事件。默认是冒泡。大部分事件都具有冒泡特性，但也有不支持冒泡的事件，比如mouseenter  mouse leave
+
+   - **事件流**：在元素布局时，子元素是在父元素父元素上面显示的，并且一般是在父元素内部显示的。如果我们在子元素内点击鼠标，那么也就是在父元素内点击鼠标，子元素和父元素都能收到点击事件，事件流指的就是事件在子元素和父元素之间触发的先后顺序。**冒泡**就是先触发子元素的事件，然后向父元素传递。捕获就是父元素先触发事件，然后子元素才触发事件。默认是冒泡。大部分事件都具有冒泡特性，但也有不支持冒泡的事件，比如mouseenter  mouse leave
+
+   - 关于onmouseover  onmouseout  onmouseenter  onmouseleave,他们的区别分为两方面，**一是是否支持事件流**，也就是是否冒泡或捕获(子元素触发此事件时，父元素是否会触发)，其次是**在进入子元素时，是否触发父元素的离开事件**。
+
+     比如有两个嵌套的div：A和B，B在A的内部，那么鼠标从外部进入A时，触发A的onmouseover事件，然后从A进入到B时，触发A的onmouseout事件，然后触发B的onmouseover事件，由于事件流，所以A的onmouseover事件也被触发，然后从B离开到A时，先触发B的onmouseout，同样从事件流触发A的onmouseout，然后A触发onmouseover事件。对于onmouseenter 和onmouseleave事件，鼠标从外部进入A时，触发A的onmouseenter，然后从A进入B时，触发B的onmouseenter，此时既没有事件流，也不会离开A，从B移动到A时，触发B的onmouseleave，从A离开时触发A的onmouseleave。
 
 
 
@@ -858,6 +865,10 @@ e.stopPropagation(); // 取消事件的进一步捕获或冒泡，IE8以前用e.
     }else{
         e.cancelBubble = true;
     }
+e.bubbles;    // 事件是否冒泡(默认的事件流就是冒泡)
+e.eventPhase; // 事件冒泡的过程中，执行的阶段，真正触发事件的元素接收的到事件的eventPhase属性为2，冒泡时，其父元素的事件eventPhase为3，捕获时，其父元素的eventPhase为1
+e.button;     // 鼠标事件中的按钮： 0左键 1 中键  2右键
+
 ```
 
 
@@ -883,6 +894,12 @@ target  ：触摸的元素对象
 
 
 ```
+
+## Window及BOM
+
+
+
+
 
 ## 常用功能
 
@@ -1243,6 +1260,10 @@ document.onkeydown = function(e){
 ```
 
 由于触摸事件和鼠标事件的内容是不同的，所以需要使用不同的方法计算坐标。在鼠标拖动中，我们可以从事件中获取触摸点相对于元素和相对于客户区的坐标，相减之后就是元素的坐标。但是在触摸事件中，我们知道的是触摸点相对于客户区的坐标clientX和元素相对于父元素的坐标offsetLeft，移动过程中相对于客户区的坐标减去按下时的坐标，再加上初始的left和top就是就是当前的left和top
+
+
+
+
 
 
 
