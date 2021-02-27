@@ -761,6 +761,11 @@ ontouchmove  手指在屏幕上移动时触发
 ontouchend   手指离开屏幕时触发
 ontouchcancel 当系统停止跟踪触摸时触发，比如电话接入或者弹出信息时，会中断之前的触摸过程，一般在这个操作中进行暂停操作
 
+onload; // 加载完成,包括HTML文档以及内部嵌入的资源，比如css、js、图片、视频和音频等
+onerror; // 加载发生错误
+DOMContentLoaded // 只能使用DOM2的方式添加，在DOM树渲染完毕后触发，也就是在获取完HTML以及外部的CSS和JS文件之后，使用HTML及CSS确定基本布局，然后执行全局JS代码之后确定最终布局时触发。
+readystatechange // 文档的加载状态改变，loading-> interactive ->complete, 只能加到document对象上
+
 
 // 使用实例
 // 1. 在标签的事件属性中指定要执行的js代码
@@ -895,7 +900,58 @@ target  ：触摸的元素对象
 
 ```
 
-## Window及BOM
+### 事件委托
+
+也叫事件代理，就是利用事件冒泡，把自己处理不了的事件，或者不方便处理的事件，让父元素来处理，从而做到只提供一个事件处理程序，就可以管理某一类型的所有事件。
+
+在父元素的事件处理程序中可以利用`e.target`来获取触发事件的子元素对象。
+
+## BOM
+
+BOM是浏览器对象模型，用于控制浏览器的行为。主要对象结构如下
+
+![BOM](http://pic.llsong.xyz:9000/picbed/2021/2/27/BOM-19451.png)
+
+window对象是BOM的根对象，其他对象是作为window对象的属性而存在。window对象是全局对象，属性可以直接使用
+
+## window对象
+
+
+
+```js
+alert(msg)      警告对话框
+let rt = confirm(msg) 确定对话框
+let ret = prompt(msg, initData) 文本输入对话框
+isNaN(arg)      判断参数是否为NaN
+isFinite(arg)   判断参数是否为有限数值
+
+open(url，windowname, attr) 在windowname代表的窗口中打开url,attr是窗口的特征(宽高等),返回值是代表新窗口的window对象
+close()       关闭当前窗口
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
