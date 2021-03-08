@@ -270,6 +270,16 @@ Bootstrap中的js插件依赖jQuery，所以在引入Bootstrap之前要先引入
 
 
 
+### 导航
+
+导航组件都依赖`nav`类，改变修饰类可以改变样式
+
+标签页导航： `nav nav-tabs`
+
+胶囊式标签页： `nav nav-pills`  堆叠胶囊式标签页 `nav nav-pills nav-stacked`
+
+
+
 
 
 
