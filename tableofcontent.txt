@@ -1,10 +1,3 @@
-529_Bootstrap（1）_Bootstrap-按钮202002期第二阶段
-530_Bootstrap（1）_Bootstrap-图片202002期第二阶段
-531_Bootstrap（1）_Bootsrap-全局CSS样式之其它202002期第二阶段
-532_Bootstrap（1）_Bootstrap-响应式工具202002期第二阶段
-533_Bootstrap（1）_缩略图202002期第二阶段
-534_Bootstrap（2）_Bootstrap-表单202002期第二阶段
-535_Bootstrap（2）_Bootstrap组件-字体图标202002期第二阶段
 536_Bootstrap（2）_Bootstrap-下拉菜单202002期第二阶段
 537_Bootstrap（2）_Bootstrap组件-按钮组202002期第二阶段
 538_Bootstrap（2）_Bootstrap组件-输入框组202002期第二阶段

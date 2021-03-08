@@ -148,6 +148,37 @@ Bootstrap中的js插件依赖jQuery，所以在引入Bootstrap之前要先引入
 
 
 
+### 表单
+
+表单元素使用 `form-control`， 宽度100%显示； 表单元素最好包裹在`form-group`的div中，添加上下间距，更加美观。
+
+表单元素添加`form-inline` 使其内容左对齐，以行内块的方式显示。
+
+建议为表单元素设置label标签，这样样式更好
+
+将label标签与表单元素水平排列时，只需要为表单添加`form-horizontal` ,然后为label添加`control-label`
+
+单选框和复选框的样式为`radio` `checkbox` ,行内显示时为 `radio-inline` `checkbox-inline`
+
+表单前后添加元素 `input-group input-group-addon`
+
+为输入框元素添加额外的图标：`has-feedback` `<span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>`
+
+```html
+<!-- 单选框和复选框的写法 -->
+<div class="checkbox">
+    <label>
+        <input type="checkbox"> Check me out
+    </label>
+</div>
+```
+
+
+
+
+
+
+
 ### 按钮
 
 `a` `button` `input` 等元素都可以作为按钮使用，也都可以使用按钮样式，建议使用button
@@ -159,6 +190,87 @@ Bootstrap中的js插件依赖jQuery，所以在引入Bootstrap之前要先引入
 按下状态：`.active`
 
 禁用状态： 通过为按钮添加透明度即可显示出禁用状态，另外button的属性中有disabled，可以使用它来禁用按钮
+
+
+
+### 图片
+
+响应式图片： `img-responsive`   居中使用`center-block`
+
+图片形状： `img-rounded  img-circle   img-thumbnail`
+
+
+
+### 其他内容
+
+关闭按钮： `<button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>`
+
+三角符号：`<span class="caret"></span>`
+
+快速浮动：`pull-left  pull-right`
+
+块居中： `center-block`  
+
+文本居中 `text-block`
+
+清除浮动： `clearfix`
+
+显示或隐藏： `show  hidden`
+
+
+
+## 组件
+
+组件指的是Bootstrap中可服用的功能模块，包括字体图标、下拉菜单、导航、警告框、弹出框等。
+
+### 字体图标
+
+和矢量图库基本类似，通过`<span class="glyphicon glyphicon-align-left" aria-hidden="true"></span>` 的方式使用即可
+
+
+
+### 缩略图
+
+缩略图类可以方便的展示栅格样式的图像、视频、文本等内容。缩略图有边框以及内边距，在鼠标悬浮时边框加深。
+
+```html
+<div class="row">
+  <div class="col-sm-6 col-md-4">
+    <div class="thumbnail">
+      <img src="..." alt="...">
+      <div class="caption">
+        <h3>Thumbnail label</h3>
+        <p>...</p>
+      </div>
+    </div>
+  </div>
+```
+
+
+
+### 下拉菜单
+
+将下拉菜单触发器和下拉菜单都包裹在`dropdown`里，或者另一个声明了`position:relative;`的元素，然后加入组成菜单的HTML代码
+
+```html
+<div class="dropdown">
+  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+    Dropdown
+    <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+    <li><a href="#">Action</a></li>
+    <li><a href="#">Another action</a></li>
+    <li><a href="#">Something else here</a></li>
+    <li role="separator" class="divider"></li>
+    <li><a href="#">Separated link</a></li>
+  </ul>
+</div>
+```
+
+
+
+
 
 
 
